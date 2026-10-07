@@ -200,3 +200,46 @@ def test_journal_append_only_and_review(tmp_path):
     assert "смещение +8.0" in text and "ПРЕДЛОЖЕНИЕ" in text
     # журнал только дописывается: строк больше, чем решений
     assert len((tmp_path / "j.jsonl").read_text(encoding="utf-8").splitlines()) == 5
+
+
+# ---------- пределы против атак на парсер ----------
+
+def test_docx_dtd_in_utf16_is_rejected(tmp_path):
+    """Поиск «<!DOCTYPE» в байтах не видит XML в UTF-16 — запрет должен стоять в самом парсере."""
+    p = tmp_path / "utf16.docx"
+    xml = ('<?xml version="1.0" encoding="UTF-16"?><!DOCTYPE d [<!ENTITY a "aaaa">]>'
+           '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
+           '<w:body><w:p><w:r><w:t>&a;</w:t></w:r></w:p></w:body></w:document>').encode("utf-16")
+    assert b"<!DOCTYPE" not in xml
+    with zipfile.ZipFile(p, "w") as z:
+        z.writestr("word/document.xml", xml)
+    doc = read(p)
+    assert doc.status == "unread" and "небезопасный" in doc.reasons[0]
+
+
+def test_docx_with_too_many_parts_is_rejected(tmp_path, monkeypatch):
+    import dva.extract as ex
+
+    monkeypatch.setattr(ex, "MAX_ZIP_ENTRIES", 5)
+    p = tmp_path / "many.docx"
+    with zipfile.ZipFile(p, "w") as z:
+        for i in range(10):
+            z.writestr(f"word/footer{i}.xml", b"<w:ftr xmlns:w='x'/>")
+    assert read(p).status == "unread"
+
+
+def test_oversized_file_is_not_parsed(tmp_path, monkeypatch):
+    import dva.extract as ex
+
+    monkeypatch.setattr(ex, "MAX_FILE_BYTES", 100)
+    p = make_text_pdf(tmp_path / "big.pdf", 3)
+    doc = read(p)
+    assert doc.status == "unread" and "МБ" in doc.reasons[0]
+
+
+def test_pdf_page_limit_marks_partial(tmp_path, monkeypatch):
+    import dva.extract as ex
+
+    monkeypatch.setattr(ex, "MAX_PDF_PAGES", 1)
+    doc = read(make_text_pdf(tmp_path / "long.pdf", 3))
+    assert doc.status == "partial" and "первые 1" in doc.reasons[0]
