@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "doc-verification-agents"
+version = "1.0.0"
+description = "Агенты проверки комплекта документов: полнота чтения, ссылки на нормативы, аудит библиотеки, разметка ТЗ, журнал решений"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Dmitry Ermakov" }]
+requires-python = ">=3.11"
+dependencies = ["pypdf>=4.0"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "python-docx>=1.1", "Pillow>=10", "reportlab>=4"]
+
+[project.scripts]
+dva = "dva.cli:main"
+
+[tool.setuptools]
+packages = ["dva"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

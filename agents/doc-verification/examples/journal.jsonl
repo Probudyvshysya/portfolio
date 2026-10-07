@@ -1,0 +1,5 @@
+{"id": "Z-101", "segment": "проекты организации движения", "decision": "take", "reason": "профиль наш, барьеров нет", "forecast": 12.0, "day": "2026-08-20", "outcome": "lost", "actual": 17.4}
+{"id": "Z-102", "segment": "проекты организации движения", "decision": "take", "reason": "профиль наш", "forecast": 15.0, "day": "2026-08-26", "outcome": "lost", "actual": 25.3}
+{"id": "Z-103", "segment": "схемы теплоснабжения", "decision": "skip", "reason": "нужна электронная модель", "day": "2026-09-02", "outcome": "skipped_ok"}
+{"id": "Z-104", "segment": "паспортизация дорог", "decision": "skip", "reason": "полевые работы", "day": "2026-09-05", "outcome": "skipped_wrong"}
+{"id": "Z-105", "segment": "проекты организации движения", "decision": "watch", "reason": "ждём разъяснений", "forecast": 20.0, "day": "2026-09-14"}
