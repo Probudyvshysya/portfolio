@@ -4,7 +4,7 @@
 </picture>
 
 <p align="center">
-  <a href="https://t.me/official_konveyer"><img src="https://img.shields.io/badge/Telegram-@official__konveyer-26A5E4?logo=telegram&logoColor=white" alt="Telegram"></a>
+  <a href="https://t.me/probudivshiysya"><img src="https://img.shields.io/badge/Telegram-@probudivshiysya-26A5E4?logo=telegram&logoColor=white" alt="Telegram"></a>
   <a href="https://reels-studio-demo.vercel.app"><img src="https://img.shields.io/badge/демо-Reels_Studio-7C3AED?logo=vercel&logoColor=white" alt="Демо"></a>
   <a href="https://github.com/Probudyvshysya/portfolio/actions/workflows/tests.yml"><img src="https://github.com/Probudyvshysya/portfolio/actions/workflows/tests.yml/badge.svg" alt="tests"></a>
   <br>
@@ -136,7 +136,7 @@
 **Открытый код:** [agents/doc-verification](agents/doc-verification) — вычищенное ядро проверки документов:
 светофор полноты, сверка ссылок на пункты нормативов, аудит библиотеки нормативов (подмена и устаревшая редакция),
 разметка пунктов ТЗ «наше / не наше / от заказчика», журнал решений с ревизором. Запускается одной командой,
-22 теста, примеры на вымышленных нормативах. Ранняя версия конвейера — [doc-pipeline](https://github.com/Probudyvshysya/doc-pipeline).
+22 теста, примеры на вымышленных нормативах.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/terminal-dark.svg">
@@ -192,6 +192,6 @@ ffmpeg, Whisper, GitHub Actions, Linux (systemd, cron, tmux).
 ---
 
 <p align="center">
-  <b>Дмитрий Ермаков</b> · <a href="https://t.me/official_konveyer">Telegram @official_konveyer</a><br>
+  <b>Дмитрий Ермаков</b> · <a href="https://t.me/probudivshiysya">Telegram @probudivshiysya</a><br>
   <sub>Покажу любую систему вживую на созвоне.</sub>
 </p>

@@ -25,4 +25,4 @@
 
 ## Сообщить об уязвимости
 
-Telegram [@official_konveyer](https://t.me/official_konveyer). Пожалуйста, не публикуйте подробности до исправления.
+Telegram [@probudivshiysya](https://t.me/probudivshiysya). Пожалуйста, не публикуйте подробности до исправления.
