@@ -20,3 +20,15 @@ jobs:
           python-version: ${{ matrix.python }}
       - run: pip install -r requirements-dev.txt
       - run: python -m pytest -q
+  local-rag:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: agents/local-rag-agro
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - run: pip install pytest
+      - run: python -m pytest -q
