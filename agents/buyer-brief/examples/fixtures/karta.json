@@ -1,0 +1,20 @@
+{
+ "opisanie": "Сохранённые ответы источников для режима --offline и тестов. Заголовки, тексты и цифры выдуманы.",
+ "segodnya": "2026-11-09",
+ "karta": [
+  ["XML_daily\\.asp\\?date_req=10/11/2026", "cbr-kursy-seychas.xml"],
+  ["XML_daily\\.asp\\?date_req=03/11/2026", "cbr-kursy-nedelyu-nazad.xml"],
+  ["cbr\\.ru/hd_base/KeyRate", "cbr-klyuchevaya.html"],
+  ["zerno\\.ru/$", "zerno-lenta.html"],
+  ["zerno\\.ru/node/50101$", "zerno-50101.html"],
+  ["zerno\\.ru/node/50102$", "zerno-50102.html"],
+  ["zerno\\.ru/node/50103$", "zerno-50103.html"],
+  ["zerno\\.ru/node/50104$", "zerno-50104.html"],
+  ["zerno\\.ru/node/50107$", "zerno-50107.html"],
+  ["interfax\\.ru/rss\\.asp", "interfax-rss.xml"],
+  ["interfax\\.ru/business/", "interfax-prozerno.html"],
+  ["open-meteo\\.com.*latitude=55\\.03", "pogoda-novosibirsk.json"],
+  ["open-meteo\\.com.*latitude=53\\.35", "pogoda-barnaul.json"],
+  ["open-meteo\\.com.*latitude=54\\.99", "pogoda-omsk.json"]
+ ]
+}

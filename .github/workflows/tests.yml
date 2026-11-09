@@ -24,7 +24,44 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: agents/local-rag-agro
+        working-directory: agents/local-rag-docs
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - run: pip install pytest
+      - run: python -m pytest -q
+  hr-assistant:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: agents/hr-interview-assistant
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - run: sudo apt-get update && sudo apt-get install -y libsndfile1
+      - run: pip install -r requirements-dev.txt
+      - run: python -m pytest -q
+  grain-buyer:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: agents/buyer-brief
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - run: pip install pytest
+      - run: python -m pytest -q
+  usn-bookkeeper:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: agents/usn-bookkeeper
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-python@v7

@@ -10,6 +10,10 @@ from .extract import read
 
 
 def main(argv: list[str] | None = None) -> int:
+    # консоль Windows в cp1251: без этого эмодзи в выводе роняют запись в файл или конвейер
+    for potok in (sys.stdout, sys.stderr):
+        if hasattr(potok, "reconfigure"):
+            potok.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser(prog="dva", description="Агенты проверки документов")
     sub = ap.add_subparsers(dest="cmd", required=True)
 

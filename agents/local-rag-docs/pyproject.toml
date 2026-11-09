@@ -1,7 +1,7 @@
 [project]
-name = "local-rag-agro"
+name = "local-rag-docs"
 version = "1.0.0"
-description = "Локальный поиск по документам агротрейдера: Ollama, без интернета"
+description = "Локальный поиск по документам компании со ссылкой на пункт: Ollama, без интернета"
 license = { text = "MIT" }
 authors = [{ name = "Dmitry Ermakov" }]
 requires-python = ">=3.11"

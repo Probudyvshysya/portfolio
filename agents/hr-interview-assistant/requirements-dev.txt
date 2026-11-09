@@ -1,0 +1,14 @@
+# Только то, что нужно тестам: модели в тестах подменены фейками. torch собран без видеокарты.
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.8.0+cpu
+torchaudio==2.8.0+cpu
+silero-vad==6.2.0
+onnxruntime==1.23.2
+numpy==2.5.4
+soundfile==0.14.0
+fastapi==0.115.12
+starlette==0.46.2
+httpx==0.28.1
+python-multipart==0.0.20
+uvicorn==0.34.2
+pytest==8.3.5

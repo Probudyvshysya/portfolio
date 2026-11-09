@@ -1,0 +1,12 @@
+{
+ "data": "2026-10-30",
+ "istochnik": "https://www.interfax.ru/business/9000000",
+ "sleduyushchij": "06.11",
+ "klass3": {
+  "Сибирь": {"cena": 11750, "izm": 200},
+  "Урал": {"cena": 11150, "izm": 100},
+  "Поволжье": {"cena": 10050, "izm": 250},
+  "Черноземье": {"cena": 9830, "izm": 80},
+  "Юг": {"cena": 9400, "izm": 150}
+ }
+}

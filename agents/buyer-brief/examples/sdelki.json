@@ -1,0 +1,97 @@
+{
+ "opisanie": "Общие примеры для raschet.sdelka() и kalkulyator.js. Цифры выдуманы, цены за тонну без НДС.",
+ "primery": [
+  {
+   "nazvanie": "обычная сделка: продажа на 6 % дороже закупки, половина предоплатой",
+   "vhod": {
+    "obem_t": 1000,
+    "zakupka_t": 11000,
+    "prodazha_t": 11660,
+    "logistika_t": 400,
+    "predoplata_proc": 50,
+    "dney": 30,
+    "stavka_proc": 20
+   },
+   "otvet": {
+    "vyruchka": 11660000,
+    "dengi": 90410.96,
+    "do_deneg": 260000,
+    "marzha": 169589.04,
+    "marzha_proc": 1.45,
+    "dolya_deneg_proc": 34.77,
+    "cena_v_nol": 11490.41,
+    "za_10_rub": 10000,
+    "minus_10_dney": 30136.99
+   }
+  },
+  {
+   "nazvanie": "сделка в минусе: узкий спред и полная предоплата на 45 дней",
+   "vhod": {
+    "obem_t": 500,
+    "zakupka_t": 11000,
+    "prodazha_t": 11200,
+    "logistika_t": 400,
+    "predoplata_proc": 100,
+    "dney": 45,
+    "stavka_proc": 21
+   },
+   "otvet": {
+    "vyruchka": 5600000,
+    "dengi": 142397.26,
+    "do_deneg": -100000,
+    "marzha": -242397.26,
+    "marzha_proc": -4.33,
+    "dolya_deneg_proc": 0,
+    "cena_v_nol": 11684.79,
+    "za_10_rub": 5000,
+    "minus_10_dney": 31643.84
+   }
+  },
+  {
+   "nazvanie": "без предоплаты: деньги не заморожены",
+   "vhod": {
+    "obem_t": 2000,
+    "zakupka_t": 10500,
+    "prodazha_t": 11300,
+    "logistika_t": 350,
+    "predoplata_proc": 0,
+    "dney": 30,
+    "stavka_proc": 20
+   },
+   "otvet": {
+    "vyruchka": 22600000,
+    "dengi": 0.0,
+    "do_deneg": 900000,
+    "marzha": 900000.0,
+    "marzha_proc": 3.98,
+    "dolya_deneg_proc": 0.0,
+    "cena_v_nol": 10850.0,
+    "za_10_rub": 20000,
+    "minus_10_dney": 0.0
+   }
+  },
+  {
+   "nazvanie": "пустой объём: деления на ноль нет",
+   "vhod": {
+    "obem_t": 0,
+    "zakupka_t": 11000,
+    "prodazha_t": 11660,
+    "logistika_t": 400,
+    "predoplata_proc": 50,
+    "dney": 30,
+    "stavka_proc": 20
+   },
+   "otvet": {
+    "vyruchka": 0,
+    "dengi": 0.0,
+    "do_deneg": 0,
+    "marzha": 0.0,
+    "marzha_proc": 0,
+    "dolya_deneg_proc": 0,
+    "cena_v_nol": 0,
+    "za_10_rub": 0,
+    "minus_10_dney": 0.0
+   }
+  }
+ ]
+}

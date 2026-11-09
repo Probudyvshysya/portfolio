@@ -1,0 +1,1082 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HR-помощник</title>
+<style>
+:root {
+  --bg: #f6f7f9; --card: #ffffff; --text: #1d2330; --muted: #6b7280; --line: #e3e6eb;
+  --accent: #2f6fde; --accent-soft: #e8f0fd; --green: #1f9d55; --green-soft: #e6f6ec;
+  --red: #d64545; --red-soft: #fdeaea; --yellow: #b7791f; --yellow-soft: #fdf4e3; --grey-soft: #f0f1f3;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.5 "Segoe UI", system-ui, sans-serif; }
+header { background: var(--card); border-bottom: 1px solid var(--line); padding: 10px 20px; display: flex;
+  align-items: center; gap: 24px; flex-wrap: wrap; position: sticky; top: 0; z-index: 5; }
+header h1 { font-size: 17px; margin: 0; }
+nav button { background: none; border: none; font: inherit; padding: 6px 12px; border-radius: 6px; cursor: pointer; color: var(--muted); }
+nav button.on { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+#status { margin-left: auto; font-size: 13px; color: var(--muted); display: flex; gap: 14px; flex-wrap: wrap; }
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; vertical-align: 1px; }
+main { max-width: 1180px; margin: 0 auto; padding: 20px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 18px 20px; margin-bottom: 16px; }
+.card h2 { font-size: 16px; margin: 0 0 12px; }
+.row { display: flex; gap: 12px; flex-wrap: wrap; align-items: end; }
+.row > label { flex: 1 1 220px; }
+label { display: block; font-size: 13px; color: var(--muted); }
+input[type=text], select, textarea { width: 100%; font: inherit; color: var(--text); padding: 8px 10px; border: 1px solid var(--line);
+  border-radius: 7px; background: #fff; margin-top: 4px; }
+textarea { min-height: 70px; resize: vertical; }
+textarea.big { min-height: 380px; font-family: Consolas, monospace; font-size: 13px; }
+button.b { font: inherit; padding: 8px 16px; border-radius: 7px; border: 1px solid var(--line); background: #fff; cursor: pointer; }
+button.b:hover { border-color: var(--accent); }
+button.p { background: var(--accent); color: #fff; border-color: var(--accent); }
+button.rec { background: var(--red); color: #fff; border-color: var(--red); }
+button.g { background: var(--green); color: #fff; border-color: var(--green); }
+button:disabled { opacity: .5; cursor: default; }
+.check { display: flex; gap: 8px; align-items: center; color: var(--text); font-size: 14px; margin: 10px 0; }
+.muted { color: var(--muted); font-size: 13px; }
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .03em; }
+tr.click { cursor: pointer; } tr.click:hover td { background: var(--accent-soft); }
+.tag { display: inline-block; padding: 1px 9px; border-radius: 99px; font-size: 12.5px; background: var(--grey-soft); white-space: nowrap; }
+.tag.green { background: var(--green-soft); color: var(--green); } .tag.red { background: var(--red-soft); color: var(--red); }
+.tag.yellow { background: var(--yellow-soft); color: var(--yellow); } .tag.blue { background: var(--accent-soft); color: var(--accent); }
+.meter { height: 8px; background: var(--grey-soft); border-radius: 4px; overflow: hidden; width: 160px; display: inline-block; vertical-align: middle; }
+.meter i { display: block; height: 100%; background: var(--green); width: 0; transition: width .1s; }
+.tc { color: var(--accent); cursor: pointer; white-space: nowrap; font-variant-numeric: tabular-nums; border-bottom: 1px dashed; }
+.vyvod { font-size: 16px; background: var(--accent-soft); border-radius: 8px; padding: 12px 14px; }
+.sovet { font-size: 18px; font-weight: 600; }
+ul.flags { padding-left: 18px; margin: 6px 0; } ul.flags li { margin: 4px 0; }
+.repl { padding: 6px 0; border-bottom: 1px solid var(--line); } .repl b { color: var(--muted); font-weight: 600; }
+.repl.kand b { color: var(--accent); }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; } @media (max-width: 800px) { .grid2 { grid-template-columns: 1fr; } }
+.hide { display: none !important; }
+.err { color: var(--red); }
+table.srav th, table.srav td { min-width: 190px; } table.srav td:first-child, table.srav th:first-child { min-width: 210px; position: sticky; left: 0; background: var(--card); }
+table.srav th { text-transform: none; letter-spacing: 0; font-size: 15px; color: var(--text); }
+table.srav .lider { background: var(--green-soft); }
+table.srav tr.razdel td { background: var(--grey-soft); font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .03em; }
+.mini { font-size: 12.5px; color: var(--muted); margin-top: 3px; }
+.ball { height: 6px; background: var(--grey-soft); border-radius: 3px; overflow: hidden; margin-top: 4px; }
+.ball i { display: block; height: 100%; }
+#pleer { position: fixed; left: 0; right: 0; bottom: 0; background: var(--card); border-top: 1px solid var(--line);
+  padding: 8px 20px; display: flex; gap: 14px; align-items: center; z-index: 6; box-shadow: 0 -2px 10px rgba(0,0,0,.05); }
+#pleer audio { flex: 1; height: 36px; }
+#pleer-imya { font-weight: 600; white-space: nowrap; max-width: 30%; overflow: hidden; text-overflow: ellipsis; }
+body.s-pleerom main { padding-bottom: 80px; }
+.plitki { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+.plitka { background: var(--bg); border-radius: 9px; padding: 12px 14px; }
+.plitka b { display: block; font-size: 26px; line-height: 1.2; } .plitka span { font-size: 13px; color: var(--muted); }
+.vremya { font-size: 17px; margin: 12px 0 4px; } .vremya b { font-size: 22px; }
+.blok { border-top: 1px solid var(--line); padding: 12px 0 4px; }
+.blok h3 { font-size: 15.5px; margin: 0 0 6px; }
+.blok ol { margin: 6px 0; padding-left: 22px; } .blok ol li { margin: 4px 0; }
+.horosho, .ploho { border-radius: 7px; padding: 7px 10px; font-size: 13.5px; }
+.horosho { background: var(--green-soft); } .ploho { background: var(--red-soft); }
+@media print { header, .noprint, nav { display: none !important; } body { background: #fff; } .card { border: none; padding: 0; }
+  body.pechat-plana #tab-vak > .card:not(#v-plan) { display: none !important; } .blok { break-inside: avoid; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>HR-помощник</h1>
+  <nav>
+    <button data-tab="otk">Отклики</button>
+    <button data-tab="sobes" class="on">Собеседования</button>
+    <button data-tab="srav">Сравнение</button>
+    <button data-tab="eff">Эффект</button>
+    <button data-tab="vak">Вакансии</button>
+    <button data-tab="prav">Правила</button>
+    <button data-tab="zn">База знаний</button>
+    <button data-tab="bez">Безопасность</button>
+  </nav>
+  <div id="status"></div>
+</header>
+<main>
+
+<!-- ================= ОТКЛИКИ ================= -->
+<section id="tab-otk" class="hide">
+  <div class="card">
+    <div class="row" style="align-items:center">
+      <h2 style="margin:0;flex:1 1 300px">Отклики</h2>
+      <label style="flex:0 1 340px" class="noprint">Вакансия<select id="o-vak"></select></label>
+    </div>
+    <p class="muted">Помощник читает каждое резюме, сверяет с профилем вакансии и ставит отклики по порядку: кого звать
+      на собеседование, кто под вопросом, кто не подходит. Отклики с hh.ru будут приходить сами, когда подключим
+      доступ к hh для работодателя. Пока резюме можно вставить вручную.</p>
+    <div id="o-itog"></div>
+  </div>
+  <div class="card" style="overflow-x:auto">
+    <table><thead><tr><th>Кандидат</th><th>Совет</th><th>Балл</th><th>Ключевое по профилю</th><th>Ожидания</th><th>Письмо</th></tr></thead>
+      <tbody id="o-tbody"></tbody></table>
+    <p class="muted" id="o-pusto">Откликов на эту вакансию пока нет.</p>
+  </div>
+  <div class="card">
+    <h2>Письма кандидатам</h2>
+    <label class="check"><input type="radio" name="o-rezhim" value="0"> Сначала показывать мне, отправляю сама</label>
+    <label class="check"><input type="radio" name="o-rezhim" value="1"> Приглашения на собеседование помощник отправляет сам</label>
+    <div class="row"><label style="flex:0 1 420px">Подпись в письмах<input type="text" id="o-podpis" placeholder="Марина Петрова, HR-менеджер"></label>
+      <button class="b" id="b-o-nastr">Сохранить</button> <span id="o-nastr-st" class="muted" style="align-self:center"></span></div>
+    <p class="muted">Отказ помощник сам не отправляет никогда, даже если резюме совсем не подходит. Решение, которое
+      влияет на человека, нельзя принимать только автоматически (ст. 16 152-ФЗ), поэтому отказ всегда ждёт вашего «Отправить».</p>
+  </div>
+  <div class="card noprint">
+    <details><summary class="muted" style="cursor:pointer">Добавить резюме вручную</summary>
+      <div style="margin-top:10px">
+        <label>Имя кандидата<input type="text" id="o-imya" placeholder="Иван Петров"></label>
+        <label style="margin-top:8px">Текст резюме (скопируйте со страницы hh.ru)<textarea id="o-rez" style="min-height:160px"></textarea></label>
+        <p><button class="b p" id="b-o-add">Добавить и разобрать</button> <span id="o-add-st" class="muted"></span></p>
+      </div></details>
+  </div>
+</section>
+
+<!-- ================= СОБЕСЕДОВАНИЯ ================= -->
+<section id="tab-sobes">
+  <div id="sobes-spisok">
+    <div class="card noprint">
+      <h2>Новое собеседование</h2>
+      <div class="row">
+        <label>Имя кандидата<input type="text" id="n-imya" placeholder="Иван Петров"></label>
+        <label>Вакансия<select id="n-vak"></select></label>
+        <button class="b" id="b-plan" title="Вопросы по каждой компетенции из профиля и что считать хорошим ответом">📋 План собеседования</button>
+      </div>
+      <label class="check"><input type="checkbox" id="n-soglasie"> Кандидат дал согласие на запись и обработку (отдельным документом)</label>
+      <div class="row">
+        <div>
+          <button class="b rec" id="b-rec">● Начать запись созвона</button>
+          <button class="b hide" id="b-stop">■ Остановить и разобрать</button>
+        </div>
+        <div id="rec-info" class="hide muted">
+          <span id="rec-time">00:00</span> ·
+          Вы <span class="meter"><i id="m-hr"></i></span>
+          Собеседник <span class="meter"><i id="m-k"></i></span>
+        </div>
+      </div>
+      <p class="muted">Запись идёт двумя дорожками: ваш микрофон и звук компьютера (собеседник в Телемосте, Zoom или любой
+        другой программе). Лучше в наушниках, так голоса не смешиваются.</p>
+      <details>
+        <summary class="muted" style="cursor:pointer">…или загрузить готовую запись</summary>
+        <div class="row" style="margin-top:10px">
+          <label>Одна запись (аудио или видео)<input type="file" id="f-odna"></label>
+          <span class="muted" style="align-self:center">или две дорожки:</span>
+          <label>Ваша дорожка<input type="file" id="f-hr"></label>
+          <label>Дорожка кандидата<input type="file" id="f-k"></label>
+          <button class="b p" id="b-upload">Загрузить и разобрать</button>
+        </div>
+      </details>
+      <p id="n-err" class="err"></p>
+    </div>
+    <div class="card">
+      <h2>Кандидаты</h2>
+      <table><thead><tr><th>Кандидат</th><th>Вакансия</th><th>Когда</th><th>Статус</th><th>Совет помощника</th><th>Решение HR</th></tr></thead>
+        <tbody id="k-tbody"></tbody></table>
+      <p class="muted" id="k-pusto">Пока никого. Запишите или загрузите первое собеседование.</p>
+    </div>
+  </div>
+
+  <div id="sobes-detal" class="hide">
+    <p class="noprint"><button class="b" id="b-nazad">← Все кандидаты</button>
+      <button class="b" onclick="window.print()">Печать / PDF</button></p>
+    <div id="detal"></div>
+  </div>
+</section>
+
+<!-- ================= СРАВНЕНИЕ ================= -->
+<section id="tab-srav" class="hide">
+  <div class="card">
+    <div class="row" style="align-items:center">
+      <h2 style="margin:0;flex:1 1 300px">Сравнение кандидатов</h2>
+      <label style="flex:0 1 340px" class="noprint">Вакансия<select id="s-vak"></select></label>
+      <button class="b noprint" onclick="window.print()">Печать / PDF</button>
+    </div>
+    <p class="muted">Все разобранные кандидаты по одной вакансии на одном экране. Таблицу собирает программа из заключений,
+      решение принимаете вы.</p>
+    <div id="s-itog"></div>
+  </div>
+  <div class="card" style="overflow-x:auto"><div id="s-tablica"></div></div>
+</section>
+
+<!-- ================= ЭФФЕКТ ================= -->
+<section id="tab-eff" class="hide">
+  <div class="card">
+    <h2>Что помощник уже сделал</h2>
+    <p class="muted">Считается по данным на этом компьютере.</p>
+    <div id="e-cifry" class="plitki"></div>
+  </div>
+  <div class="card">
+    <h2>Сколько времени экономит</h2>
+    <div class="row">
+      <label style="flex:0 1 220px">Собеседований в день<input type="text" id="e-den" value="10" inputmode="numeric"></label>
+      <label style="flex:0 1 260px">Стоимость часа HR, ₽ (если нужно в деньгах)<input type="text" id="e-chas" placeholder="например 700" inputmode="numeric"></label>
+    </div>
+    <div id="e-vremya"></div>
+  </div>
+  <div class="grid2">
+    <div class="card"><h2>Совет помощника и ваше решение</h2><div id="e-sovpadenie"></div></div>
+    <div class="card"><h2>Поправки по неделям</h2><div id="e-popravki"></div></div>
+  </div>
+</section>
+
+<!-- ================= ВАКАНСИИ ================= -->
+<section id="tab-vak" class="hide">
+  <div class="card">
+    <h2>Вакансии</h2>
+    <table><thead><tr><th>Должность</th><th>Изменена</th></tr></thead><tbody id="v-tbody"></tbody></table>
+    <p class="muted" id="v-pusto">Вакансий пока нет.</p>
+    <p><button class="b p" id="b-v-new">+ Новая вакансия</button></p>
+  </div>
+  <div class="card hide" id="v-forma">
+    <h2 id="v-zag">Новая вакансия</h2>
+    <label>Должность<input type="text" id="v-nazv" placeholder="Менеджер по закупкам зерна"></label>
+    <label style="margin-top:10px">Кого ищем: своими словами, как рассказали бы коллеге
+      <textarea id="v-fakt" placeholder="Нужен человек, который сам ведёт хозяйства, знает качество зерна, работал во ФГИС…"></textarea></label>
+    <h2 style="margin-top:18px">Чек-лист</h2>
+    <p class="muted">Ответьте коротко. Чего не знаете, пропустите, помощник пометит «уточнить у руководителя».</p>
+    <div id="v-chek"></div>
+    <p><button class="b p" id="b-v-sobrat">Собрать профиль</button> <span class="muted" id="v-sobr-st"></span></p>
+    <label>Профиль должности заполняется сам из ваших ответов выше. Проверьте, допишите, что нужно. По нему помощник сверяет кандидатов
+      <textarea id="v-profil" class="big" placeholder="Нажмите «Собрать профиль», и здесь появится профиль из ваших ответов. Можно писать и вручную."></textarea></label>
+    <p id="v-utochnit" class="muted"></p>
+    <p><button class="b g" id="b-v-save">Сохранить вакансию</button> <button class="b" id="b-v-cancel">Отмена</button>
+      <span id="v-err" class="err"></span></p>
+  </div>
+  <div class="card hide" id="v-plan"></div>
+</section>
+
+<!-- ================= ПРАВИЛА ================= -->
+<section id="tab-prav" class="hide">
+  <div class="card">
+    <h2>Чему научился помощник</h2>
+    <p class="muted">Каждая ваша поправка к заключению становится правилом. Помощник учитывает правила во всех следующих разборах
+      (общие действуют для всех вакансий, остальные только для своей). Правило можно переписать или удалить.</p>
+    <div id="p-spisok"></div>
+  </div>
+</section>
+<!-- ================= БАЗА ЗНАНИЙ ================= -->
+<section id="tab-zn" class="hide">
+  <div class="card">
+    <h2>База знаний</h2>
+    <p class="muted">ГОСТы, регламенты и правила компании. Когда кандидат называет норму, класс, документ или налоговое правило,
+      помощник сверяет его слова с этими документами и ставит ссылку на пункт. Чего нет в базе, ищет в интернете
+      (только общий вопрос, без данных кандидата) и честно помечает такой источник.</p>
+    <div id="zn-spisok"></div>
+    <div class="row noprint" style="margin-top:12px">
+      <label>Добавить документ (.md или .txt)<input type="file" id="zn-fayl" accept=".md,.txt"></label>
+      <button class="b p" id="b-zn-add">Добавить в базу</button>
+    </div>
+    <p id="zn-st" class="muted"></p>
+  </div>
+  <div class="card">
+    <h2>Проверить поиск</h2>
+    <div class="row"><label>Вопрос<input type="text" id="zn-q" placeholder="Сколько клейковины нужно для 3 класса пшеницы?"></label>
+      <button class="b" id="b-zn-q">Найти</button></div>
+    <div id="zn-otvet"></div>
+  </div>
+</section>
+
+<!-- ================= БЕЗОПАСНОСТЬ ================= -->
+<section id="tab-bez" class="hide">
+  <div class="card">
+    <h2>Где данные и что уходит наружу</h2>
+    <div id="bez-svodka"></div>
+  </div>
+  <div class="card">
+    <h2>Журнал выхода в интернет</h2>
+    <p class="muted">Каждый запрос, который программа отправила наружу. Других выходов нет: распознавание речи и модель
+      работают на этом компьютере.</p>
+    <div id="bez-zhurnal"></div>
+  </div>
+</section>
+</main>
+<div id="pleer" class="hide noprint">
+  <span class="muted">Запись:</span> <span id="pleer-imya"></span>
+  <audio id="audio" controls preload="metadata"></audio>
+  <button class="b" id="b-pleer-x" title="Закрыть плеер">✕</button>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const STATUS_TAG = {"запись": "red", "в очереди": "", "расшифровка": "blue", "заключение": "blue", "готово": "green", "ошибка": "red"};
+const SOVET_TAG = {"приглашать дальше": "green", "под вопросом": "yellow", "не подходит": "red"};
+const OCENKA_TAG = {"сильно": "green", "достаточно": "yellow", "слабо": "red", "нет данных": ""};
+let SROK = 30;  // срок хранения после отказа, приходит с сервера (HR_SROK_DNEY)
+let tekushchiy = null, vakansii = [], redakt_vak = null, pokazan_status = null;
+const imena = {};
+
+// ---------- плеер: внизу страницы, не прерывается при переходах ----------
+function slushat(i, s, igrat = true) {
+  const a = $("#audio");
+  if (a.dataset.k !== i) {
+    a.src = window.demo_audio ? window.demo_audio(i) : "/api/kandidaty/" + i + "/zapis"; a.dataset.k = i; $("#pleer-imya").textContent = imena[i] || "";
+  }
+  $("#pleer").classList.remove("hide"); document.body.classList.add("s-pleerom");
+  const pusk = () => { if (s != null) a.currentTime = Math.max(0, s - 2); if (igrat) a.play(); };
+  if (a.readyState >= 1) pusk(); else a.addEventListener("loadedmetadata", pusk, {once: true});
+}
+function zakryt_pleer() {
+  const a = $("#audio"); a.pause(); a.removeAttribute("src"); a.load(); a.dataset.k = "";
+  $("#pleer").classList.add("hide"); document.body.classList.remove("s-pleerom");
+}
+
+function el(tag, attrs = {}, ...kids) {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === "class") e.className = v; else if (k.startsWith("on")) e.addEventListener(k.slice(2), v); else e.setAttribute(k, v);
+  }
+  for (const k of kids.flat(Infinity)) if (k != null && k !== false) e.append(k instanceof Node ? k : String(k));
+  return e;
+}
+function tag(text, cls) { return el("span", {class: "tag " + (cls || "")}, text); }
+function kogda(iso) { if (!iso) return "-"; const d = new Date(iso); return d.toLocaleDateString("ru-RU") + " " + d.toTimeString().slice(0, 5); }
+function sek(tc) { const m = String(tc || "").match(/(\d+):(\d\d)/); return m ? (+m[1]) * 60 + (+m[2]) : null; }
+function kratko(t, n = 105) {  // цитату, обрезанную схемой ответа, режем по целому слову
+  t = String(t || "").trim();
+  return t.length < n ? t : t.slice(0, n).replace(/\s+\S*$/, "").replace(/[,.;:]$/, "") + "…";
+}
+function mmss(s) { s = Math.floor(s); return String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0"); }
+
+async function api(path, opts = {}) {
+  if (window.demo_api) return window.demo_api(path, opts);  // демо-файл: данные внутри страницы, без сервера
+  if (opts.json !== undefined) { opts.body = JSON.stringify(opts.json); opts.headers = {"Content-Type": "application/json"}; delete opts.json; }
+  const r = await fetch(path, opts);
+  const d = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(d.detail || ("ошибка " + r.status));
+  return d;
+}
+
+// ---------- вкладки ----------
+document.querySelectorAll("nav button").forEach(b => b.onclick = () => pokazat_tab(b.dataset.tab));
+function pokazat_tab(t) {
+  document.querySelectorAll("nav button").forEach(b => b.classList.toggle("on", b.dataset.tab === t));
+  ["otk", "sobes", "srav", "eff", "vak", "prav", "zn", "bez"].forEach(x => $("#tab-" + x).classList.toggle("hide", x !== t));
+  if (t === "vak") zagr_vakansii(); if (t === "prav") zagr_pravila(); if (t === "sobes") zagr_kandidatov();
+  if (t === "srav") zagr_sravnenie(); if (t === "eff") zagr_effekt(); if (t === "otk") zagr_otkliki();
+  if (t === "zn") zagr_znaniya(); if (t === "bez") zagr_bez();
+}
+
+// ---------- статус ----------
+async function obnovit_status() {
+  try {
+    const s = await api("/api/sostoyanie");
+    const st = $("#status"); st.replaceChildren();
+    st.append(el("span", {}, el("span", {class: "dot", style: "background:" + (s.ollama ? "var(--green)" : "var(--red)")}),
+      s.ollama ? "модель готова" : "модель не запущена: откройте ZAPUSK.cmd"));
+    if (s.razbiraetsya) st.append(el("span", {}, "идёт разбор…"));
+    if (s.v_ocheredi) st.append(el("span", {}, "в очереди: " + s.v_ocheredi));
+    const z = s.zapis;
+    $("#b-rec").classList.toggle("hide", z.idet); $("#b-stop").classList.toggle("hide", !z.idet);
+    $("#rec-info").classList.toggle("hide", !z.idet);
+    if (z.idet) {
+      st.append(el("span", {style: "color:var(--red)"}, "● идёт запись"));
+      $("#rec-time").textContent = mmss(z.sekund);
+      $("#m-hr").style.width = Math.min(100, z.uroven.hr * 300) + "%";
+      $("#m-k").style.width = Math.min(100, z.uroven.kandidat * 300) + "%";
+      if (z.oshibka) $("#n-err").textContent = "Проблема с записью: " + z.oshibka;
+    }
+    return s;
+  } catch (e) { $("#status").textContent = "сервер не отвечает"; }
+}
+
+// ---------- кандидаты ----------
+async function zagr_vak_select() {
+  vakansii = await api("/api/vakansii");
+  const s = $("#n-vak"), cur = s.value; s.replaceChildren();
+  if (!vakansii.length) s.append(el("option", {value: ""}, "сначала создайте вакансию"));
+  vakansii.forEach(v => s.append(el("option", {value: v.id}, v.nazvanie)));
+  if (cur) s.value = cur;
+}
+async function zagr_kandidatov() {
+  await zagr_vak_select();
+  const ks = await api("/api/kandidaty");
+  const tb = $("#k-tbody"); tb.replaceChildren();
+  $("#k-pusto").classList.toggle("hide", ks.length > 0);
+  for (const k of ks) {
+    tb.append(el("tr", {class: "click", onclick: () => otkryt(k.id)},
+      el("td", {}, el("b", {}, k.imya)), el("td", {}, k.vakansiya), el("td", {}, kogda(k.sozdan)),
+      el("td", {}, tag(k.status, STATUS_TAG[k.status])),
+      el("td", {}, k.sovet ? tag(k.sovet, SOVET_TAG[k.sovet]) : "-"),
+      el("td", {}, k.reshenie ? tag(k.reshenie, k.reshenie === "дальше" ? "green" : "red") : "-")));
+  }
+}
+function novye_dannye() {
+  return {imya: $("#n-imya").value.trim(), vakansiya_id: $("#n-vak").value, soglasie: $("#n-soglasie").checked};
+}
+$("#b-rec").onclick = async () => {
+  $("#n-err").textContent = "";
+  try { await api("/api/zapis/nachat", {method: "POST", json: novye_dannye()}); await obnovit_status(); }
+  catch (e) { $("#n-err").textContent = e.message; }
+};
+$("#b-stop").onclick = async () => {
+  try { await api("/api/zapis/stop", {method: "POST"}); $("#n-imya").value = ""; $("#n-soglasie").checked = false;
+    await obnovit_status(); zagr_kandidatov(); }
+  catch (e) { $("#n-err").textContent = e.message; }
+};
+$("#b-upload").onclick = async () => {
+  $("#n-err").textContent = "";
+  const d = novye_dannye(), fd = new FormData();
+  Object.entries(d).forEach(([k, v]) => fd.append(k, v));
+  if ($("#f-odna").files[0]) fd.append("odna", $("#f-odna").files[0]);
+  else { if ($("#f-hr").files[0]) fd.append("hr", $("#f-hr").files[0]); if ($("#f-k").files[0]) fd.append("kandidat", $("#f-k").files[0]); }
+  $("#b-upload").disabled = true; $("#b-upload").textContent = "Загружаю…";
+  try { await api("/api/kandidaty", {method: "POST", body: fd});
+    ["#f-odna", "#f-hr", "#f-k", "#n-imya"].forEach(s => $(s).value = ""); $("#n-soglasie").checked = false; zagr_kandidatov(); }
+  catch (e) { $("#n-err").textContent = e.message; }
+  $("#b-upload").disabled = false; $("#b-upload").textContent = "Загрузить и разобрать";
+};
+$("#b-pleer-x").onclick = zakryt_pleer;
+$("#b-nazad").onclick = () => { tekushchiy = null; $("#sobes-detal").classList.add("hide"); $("#sobes-spisok").classList.remove("hide"); zagr_kandidatov(); };
+
+// ---------- заключение ----------
+async function otkryt(i) {
+  tekushchiy = i;
+  $("#sobes-spisok").classList.add("hide"); $("#sobes-detal").classList.remove("hide");
+  await risovat(i);
+}
+function tc(t) {
+  const s = sek(t);
+  if (s == null || !t) return t ? el("span", {class: "muted"}, t) : "";
+  return el("span", {class: "tc", title: "послушать с этого места", onclick: () => slushat(tekushchiy, s)}, t);
+}
+function tcs(text) {  // «00:36, 04:44» -> несколько кликабельных
+  const parts = String(text || "").match(/\d+:\d\d/g) || [];
+  return parts.length ? parts.flatMap((p, n) => n ? [", ", tc(p)] : [tc(p)]) : [text];
+}
+async function risovat(i) {
+  const d = await api("/api/kandidaty/" + i), m = d.meta, o = d.otchet && d.otchet.otchet, z = d.otchet && d.otchet.zamer;
+  pokazan_status = m.status;
+  const box = $("#detal"); box.replaceChildren();
+  const vak = vakansii.find(v => v.id === m.vakansiya_id);
+  box.append(el("div", {class: "card"},
+    el("h2", {style: "font-size:20px"}, m.imya, " · ", el("span", {class: "muted", style: "font-size:15px"}, vak ? vak.nazvanie : "")),
+    el("p", {class: "muted"}, "Собеседование " + kogda(m.sozdan), m.dlitelnost_s ? " · " + mmss(m.dlitelnost_s) : "", " · статус ", tag(m.status, STATUS_TAG[m.status])),
+    m.oshibka ? el("p", {class: "err"}, "Ошибка: " + m.oshibka) : "",
+    m.primechanie ? el("p", {class: "muted"}, m.primechanie) : "",
+    d.est_zapis ? el("button", {class: "b noprint", onclick: () => slushat(i, null)}, "▶ Слушать запись") : ""));
+  imena[i] = m.imya;
+  const a = $("#audio");
+  if (d.est_zapis && (!a.dataset.k || a.paused)) slushat(i, null, false);  // плеер готов к этой записи, не играет
+
+  if (!o) {
+    box.append(el("div", {class: "card"}, m.status === "ошибка" ? el("button", {class: "b p noprint", onclick: () => peresobrat(i)}, "Повторить разбор")
+      : el("p", {}, "Разбор ещё идёт. Страница обновится сама.")));
+  } else {
+    box.append(el("div", {class: "card"},
+      el("p", {class: "sovet"}, "Совет помощника: ", tag(o.sovet, SOVET_TAG[o.sovet]), el("span", {class: "muted", style: "font-size:14px;font-weight:400"}, "  · решение принимаете вы")),
+      o.ball_pct !== undefined ? el("p", {class: "muted"}, `Балл по профилю: ${o.ball_pct} % (считает программа по весам компетенций из профиля)`) : "",
+      (o.pochemu_ne_dalshe || []).length ? el("p", {style: "color:var(--yellow)"}, "Балл высокий, но не «приглашать дальше»: " + o.pochemu_ne_dalshe.join("; ") + ".") : "",
+      el("div", {class: "vyvod"}, o.vyvod),
+      blok_glavnoe(o.glavnoe),
+      (o.ne_obsuzhdali || []).length ? el("p", {}, el("b", {}, "Не обсуждали: "), o.ne_obsuzhdali.join(", "),
+        el("span", {class: "muted"}, ". В балл не входит, спросите на следующем этапе.")) : "",
+      el("p", {class: "muted"}, `Учтено ваших правил: ${z.pravil_uchteno || 0} · заключение собрано за ${Math.round(z.vremya_s / 60) || "<1"} мин`),
+      d.otchet.demo_primechanie ? el("p", {class: "muted", style: "color:var(--accent)"}, d.otchet.demo_primechanie) : ""));
+    const t = el("table", {}, el("thead", {}, el("tr", {}, ["Компетенция", "Оценка", "Почему", "Цитата", "Время"].map(h => el("th", {}, h)))));
+    const tb = el("tbody");
+    o.kompetencii.forEach(k => tb.append(el("tr", {}, el("td", {}, el("b", {}, k.nazvanie)), el("td", {}, tag(k.ocenka, OCENKA_TAG[k.ocenka])),
+      el("td", {}, k.pochemu, k.ocenka_modeli ? el("div", {class: "mini"}, `модель ставила «${k.ocenka_modeli}»`) : ""),
+      el("td", {class: "muted"}, k.citata ? "«" + kratko(k.citata) + "»" : "",
+        k.citata_proverena === false ? el("div", {style: "color:var(--red)"}, "⚠ этой фразы нет в расшифровке, проверьте по записи") : ""),
+      el("td", {}, tc(k.taymkod)))));
+    t.append(tb);
+    const sv = o.kompetencii.filter(k => k.citata_proverena !== undefined), sv_ok = sv.filter(k => k.citata_proverena).length;
+    box.append(el("div", {class: "card"}, el("h2", {}, "Компетенции"),
+      sv.length ? el("p", {class: "muted"}, `Цитаты сверены с расшифровкой: ${sv_ok} из ${sv.length}. Если помощник припишет кандидату слова, которых тот не говорил, рядом появится предупреждение.`) : "", t));
+    const dg = o.dengi || {};
+    box.append(el("div", {class: "grid2"},
+      el("div", {class: "card"}, el("h2", {}, "🟢 Зелёные флаги"), el("ul", {class: "flags"}, o.zelenye_flagi.length ? o.zelenye_flagi.map(f => el("li", {}, f.text, " ", tc(f.taymkod))) : el("li", {}, "нет"))),
+      el("div", {class: "card"}, el("h2", {}, "🔴 Красные флаги"), el("ul", {class: "flags"}, o.krasnye_flagi.length ? o.krasnye_flagi.map(f => el("li", {}, el("b", {}, f.pravilo), ": ", f.fakt, " ", tcs(f.taymkod))) : el("li", {}, "нет")),
+        (o.flagi_snyaty || []).length ? el("details", {class: "mini"}, el("summary", {style: "cursor:pointer"}, `Помощник снял ${o.flagi_snyaty.length} ${sklon(o.flagi_snyaty.length, ["флаг", "флага", "флагов"])} модели: не подтвердились`),
+          el("ul", {class: "flags"}, o.flagi_snyaty.map(f => el("li", {}, el("b", {}, bez_tochki(f.pravilo)), ": ", f.pochemu, " ", tcs(f.taymkod))))) : "",
+        dg.prevyshenie_pct !== undefined ? el("p", {class: "muted"}, `Деньги: ожидания ${dg.ozhidaniya_rub.toLocaleString("ru-RU")} ₽, вилка до ${dg.vilka_max_rub.toLocaleString("ru-RU")} ₽, превышение ${dg.prevyshenie_pct > 0 ? "+" : ""}${String(dg.prevyshenie_pct).replace(".", ",")} % (флаг от ${dg.porog_pct} %, считает программа) `, tc(dg.taymkod)) : "")));
+    box.append(el("div", {class: "grid2"},
+      el("div", {class: "card"}, el("h2", {}, "⚠ Противоречия"), el("ul", {class: "flags"}, nastoyashchie(o.protivorechiya).length ? nastoyashchie(o.protivorechiya).map(f => el("li", {}, f.text, " ", tcs(f.taymkody))) : el("li", {}, "нет"))),
+      el("div", {class: "card"}, el("h2", {}, "❓ Вопросы на следующий этап"), el("ol", {class: "flags"}, o.voprosy_dalshe.map(q => el("li", {}, q))))));
+
+    // проверка фактов
+    const VERD = {"подтверждено": ["✅", "green"], "неверно": ["❌", "red"], "спорно": ["⚠", "yellow"], "не проверено": ["⚪", ""]};
+    const pf = o.proverka_faktov || [];
+    box.append(el("div", {class: "card"}, el("h2", {}, "🔎 Проверка фактов по базе знаний"),
+      el("p", {class: "muted"}, "Что кандидат сказал о нормах, ГОСТах и правилах, сверено с документами базы знаний, а если там нет, с интернетом."),
+      pf.length ? el("table", {}, el("thead", {}, el("tr", {}, ["Кандидат сказал", "Проверка", "Что в источнике", "Источник", "Время"].map(h => el("th", {}, h)))),
+        el("tbody", {}, pf.map(x => { const v = VERD[x.verdikt] || ["", ""], ist = x.istochnik;
+          const ne_prov = x.verdikt === "не проверено";  // источник не подошёл - не показываем его, чтобы не путать
+          return el("tr", {}, el("td", {}, el("b", {}, x.fakt), el("div", {class: "muted"}, x.citata ? "«" + kratko(x.citata) + "»" : ""),
+              x.citata_proverena === false ? el("div", {class: "mini", style: "color:var(--red)"}, "⚠ дословно так кандидат не говорил, послушайте запись") : ""),
+            el("td", {}, tag(v[0] + " " + x.verdikt, v[1]), el("div", {class: "muted"}, ne_prov ? "Подходящего документа не нашлось, проверьте сами." : x.poyasnenie)),
+            el("td", {class: "muted"}, ne_prov ? "-" : x.v_istochnike || "-"),
+            el("td", {}, ist && !ne_prov ? (ist.url ? el("a", {href: ist.url, target: "_blank", rel: "noopener"}, ist.dokument || ist.url) : [el("b", {}, ist.dokument), el("div", {class: "muted"}, ist.razdel)]) : "-",
+              ist && !ne_prov ? el("div", {class: "muted"}, x.gde === "интернет" ? "интернет" : "база знаний") : ""),
+            el("td", {}, tcs(x.taymkod))); })))
+        : el("p", {}, o.proverka_oshibka ? "Проверка не выполнилась: " + o.proverka_oshibka : "Кандидат не называл норм и правил, которые можно проверить по документам.")));
+
+    // сообщения и документы
+    const chernovik = el("textarea", {style: "min-height:260px"}), st_s = el("span", {class: "muted"});
+    let posledniy = null;
+    const pokazat = f => { posledniy = f; chernovik.value = f(); obl.classList.remove("hide"); st_s.textContent = ""; };
+    const pole_podpisi = el("input", {type: "text", placeholder: "Марина Петрова, HR-менеджер", oninput: () => {
+      try { localStorage.setItem("hr-podpis", pole_podpisi.value.trim()); } catch (e) { /* без памяти браузера подпись просто не запомнится */ }
+      if (posledniy) chernovik.value = posledniy(); }});
+    try { pole_podpisi.value = localStorage.getItem("hr-podpis") || ""; } catch (e) { /* то же */ }
+    const obl = el("div", {class: "hide"}, chernovik, el("div", {class: "row", style: "margin-top:8px;align-items:center"},
+      el("button", {class: "b p", onclick: async () => {
+        try { await navigator.clipboard.writeText(chernovik.value); } catch (e) { chernovik.select(); document.execCommand("copy"); }
+        st_s.textContent = "Скопировано. Вставьте в почту или мессенджер."; }}, "Скопировать"), st_s));
+    box.append(el("div", {class: "card noprint"}, el("h2", {}, "Сообщения и документы"),
+      el("p", {class: "muted"}, "Черновики собраны из заключения. Поправьте под себя и отправьте сами: помощник никому ничего не пишет."),
+      el("div", {class: "row", style: "margin-bottom:10px"},
+        el("button", {class: "b", onclick: () => pokazat(() => svodka_rukovoditelyu(m, o, vak))}, "Сводка руководителю"),
+        el("button", {class: "b", onclick: () => pokazat(() => pismo_dalshe(m, o, vak))}, "Письмо: приглашаем дальше"),
+        el("button", {class: "b", onclick: () => pokazat(() => pismo_otkaz(m, vak))}, "Письмо: отказ"),
+        el("button", {class: "b", onclick: () => pokazat(() => prichina_otkaza(m, o, vak))}, "Причина отказа, если попросят"),
+        el("button", {class: "b", onclick: () => v_word(m, o, vak, z)}, "⬇ Заключение в Word")),
+      obl, el("label", {style: "margin-top:10px;max-width:420px"}, "Подпись в письмах", pole_podpisi)));
+
+    // поправка и решение
+    const txt = el("textarea", {placeholder: "Например: «Ожидания до +20 % не повод для „не подходит“, если ключевые компетенции сильные»"});
+    const dlya = el("select", {}, el("option", {value: "vse"}, "для всех вакансий"), el("option", {value: "eta"}, "только для этой вакансии"));
+    const st = el("span", {class: "muted"});
+    box.append(el("div", {class: "card noprint"}, el("h2", {}, "Не согласны с помощником?"),
+      el("p", {class: "muted"}, "Напишите, где он ошибся и как правильно. Это станет правилом, и такую ошибку он больше не повторит."),
+      txt, el("div", {class: "row", style: "margin-top:8px"}, el("label", {style: "flex:0 1 260px"}, "Правило действует", dlya),
+        el("button", {class: "b p", onclick: async () => {
+          try { await api(`/api/kandidaty/${i}/popravka`, {method: "POST", json: {text: txt.value, dlya: dlya.value}});
+            txt.value = ""; st.textContent = "Правило сохранено. Нажмите «Пересобрать», чтобы увидеть заключение с его учётом."; }
+          catch (e) { st.textContent = e.message; } }}, "Сохранить правило"),
+        el("button", {class: "b", onclick: () => peresobrat(i)}, "Пересобрать заключение")), st));
+    box.append(el("div", {class: "card noprint"}, el("h2", {}, "Ваше решение"),
+      el("div", {class: "row"},
+        el("button", {class: "b g", onclick: () => reshit(i, "дальше")}, "Приглашаем дальше"),
+        el("button", {class: "b rec", onclick: () => reshit(i, "отказ")}, "Отказ"),
+        m.reshenie ? el("span", {}, "Сейчас: ", tag(m.reshenie, m.reshenie === "дальше" ? "green" : "red"), " ", el("a", {href: "#", onclick: e => { e.preventDefault(); reshit(i, null); }}, "отменить")) : ""),
+      el("p", {class: "muted"}, `При отказе запись, расшифровка и заключение удаляются автоматически через ${SROK} дней.`)));
+  }
+  if (d.repliki.length) {
+    box.append(el("div", {class: "card"}, el("details", {}, el("summary", {style: "cursor:pointer;font-weight:600"}, "Полная расшифровка (" + d.repliki.length + " реплик)"),
+      d.repliki.map(r => el("div", {class: "repl" + (r.kto === "HR" ? "" : " kand")}, tc(mmss(r.start)), " ", el("b", {}, r.kto + ":"), " ", r.text)))));
+  }
+  box.append(el("p", {class: "noprint"}, el("button", {class: "b", style: "color:var(--red)", onclick: async () => {
+    if (!confirm("Удалить кандидата и все его данные сейчас?")) return;
+    if ($("#audio").dataset.k === i) zakryt_pleer();
+    await api("/api/kandidaty/" + i, {method: "DELETE"}); $("#b-nazad").click(); }}, "Удалить данные кандидата сейчас")));
+  return m.status;
+}
+// ---------- черновики сообщений: шаблоны из заключения, без модели ----------
+function podpis() {  // подпись HR в письмах помнит браузер этого компьютера
+  try { return localStorage.getItem("hr-podpis") || "[ваше имя], HR"; } catch (e) { return "[ваше имя], HR"; }
+}
+function bez_tochki(s) { return String(s || "").trim().replace(/\.+$/, ""); }
+function bez_demo(s) { return String(s || "").replace(/\s*\(демо\)\s*/g, " ").trim(); }
+function imya_kand(m) { return bez_demo(m.imya).split(/\s+/)[0]; }
+function den(iso) { return iso ? new Date(iso).toLocaleDateString("ru-RU", {day: "numeric", month: "long"}) : ""; }
+function po_ocenke(o, ocenka) { return o.kompetencii.filter(k => k.ocenka === ocenka).map(k => k.nazvanie); }
+function s_malenkoy(s) { return /^[А-ЯЁ][а-яё]/.test(s) ? s[0].toLowerCase() + s.slice(1) : s; }  // «1С» и «ФГИС» не трогаем
+
+function svodka_rukovoditelyu(m, o, vak) {
+  const L = [`${bez_demo(m.imya)}, ${s_malenkoy(bez_demo(vak && vak.nazvanie))}. Собеседование ${den(m.sozdan)}.`, ""];
+  L.push(`Совет помощника: ${o.sovet}` + (o.ball_pct !== undefined ? `, балл по профилю ${o.ball_pct} %.` : ".") +
+    (m.reshenie ? ` Решение HR: ${m.reshenie === "дальше" ? "приглашаем дальше" : "отказ"}.` : " Решение за HR."), "", o.vyvod, "");
+  const sil = po_ocenke(o, "сильно"), slab = po_ocenke(o, "слабо");
+  if (sil.length) L.push("По профилю сильно: " + sil.map(s_malenkoy).join(", ") + ".");
+  if (slab.length) L.push("По профилю слабо: " + slab.map(s_malenkoy).join(", ") + ".");
+  L.push(o.krasnye_flagi.length ? "Красные флаги: " + o.krasnye_flagi.map(f => s_malenkoy(bez_tochki(f.pravilo))).join("; ") + "." : "Красных флагов нет.");
+  const d = o.dengi || {};
+  if (d.prevyshenie_pct !== undefined) L.push(`Деньги: просит ${rub(d.ozhidaniya_rub)} на руки, верх вилки ${rub(d.vilka_max_rub)}.`);
+  const f = fakty_schet(o), oshibki = (o.proverka_faktov || []).filter(x => x.verdikt === "неверно").map(x => bez_tochki(x.fakt));
+  if ((o.proverka_faktov || []).length) L.push(`Проверка фактов по базе знаний: подтверждено ${f.da}` +
+    (oshibki.length ? `, ошибки: ${oshibki.join("; ")}.` : ", ошибок нет."));
+  if (o.voprosy_dalshe.length) L.push("", "Что спросить на следующем этапе:", ...o.voprosy_dalshe.slice(0, 3).map((q, n) => `${n + 1}. ${q}`));
+  if (o.glavnoe && o.glavnoe.status !== "не обсуждали") L.push("", `Главное для вас (${bez_tochki(o.glavnoe.trebovanie)}): ${o.glavnoe.status}. ${o.glavnoe.poyasnenie}`);
+  if ((o.ne_obsuzhdali || []).length) L.push(`Не обсуждали: ${o.ne_obsuzhdali.map(s_malenkoy).join(", ")}.`);
+  L.push("", "Запись разговора и полное заключение есть в HR-помощнике.");
+  return L.join("\n");
+}
+function pismo_dalshe(m, o, vak) {
+  const sil = po_ocenke(o, "сильно").slice(0, 2).map(s_malenkoy);
+  return [`Тема: ${bez_demo(vak && vak.nazvanie)}, следующий этап`, "",
+    `${imya_kand(m)}, здравствуйте!`, "",
+    `Спасибо за разговор ${den(m.sozdan)}.` + (sil.length ? ` Нам понравилось, как вы рассказали про ${sil.join(" и ")}.` : "") +
+      " Хотим продолжить знакомство.", "",
+    "Следующий этап: встреча с руководителем отдела, около часа. Напишите, когда вам удобно на этой неделе, и мы предложим время.", "",
+    "С уважением,", podpis()].join("\n");
+}
+function pismo_otkaz(m, vak) {
+  return [`Тема: ${bez_demo(vak && vak.nazvanie)}, ответ по собеседованию`, "",
+    `${imya_kand(m)}, здравствуйте!`, "",
+    `Спасибо, что нашли время на разговор ${den(m.sozdan)}. Мы всё взвесили и решили пока не продолжать: на эту задачу ищем человека с другим опытом.`, "",
+    "Если захотите узнать причину подробнее, ответьте на это письмо, и мы пришлём её письменно.",
+    `Запись собеседования и ваши данные удалим через ${SROK} дней.`, "",
+    "Удачи в поиске!", podpis()].join("\n");
+}
+function prichina_otkaza(m, o, vak) {
+  // ч. 5 ст. 64 ТК: по письменной просьбе причину сообщают письменно, не позже 7 рабочих дней. Только деловые качества.
+  // В письмо идёт требование из профиля, а не формулировка модели: кандидату пишем, что требовалось и что не подтвердилось
+  const prof = kompetencii_profilya(vak && vak.profil);
+  const trebovanie = k => prof.find(p => p.nazvanie.toLowerCase() === k.nazvanie.toLowerCase() || pohozhe(p.nazvanie, k.nazvanie) >= 0.5);
+  const slab = o.kompetencii.filter(k => k.ocenka === "слабо" && !/мотивац|стабильн/i.test(k.nazvanie))
+    .map(k => ({k, p: trebovanie(k)})).filter(x => x.p).sort((a, b) => b.p.ves - a.p.ves).slice(0, 3);
+  const L = [`Тема: причина отказа по вакансии «${bez_demo(vak && vak.nazvanie)}»`, "",
+    `${imya_kand(m)}, здравствуйте!`, "",
+    `Вы просили сообщить причину отказа. Отвечаем, как требует часть 5 статьи 64 Трудового кодекса.`, "",
+    `На собеседовании ${den(m.sozdan)} не подтвердился уровень, который нужен для этой должности:`];
+  slab.forEach(x => L.push(`- ${x.p.nazvanie} (что нужно: ${bez_tochki(x.p.horosho)})`));
+  if (!slab.length) L.push("- [перечислите требования должности, которым опыт не соответствует]");
+  L.push("", "Решение принято по деловым качествам и опыту, которые нужны для работы.", "", "С уважением,", podpis());
+  return L.join("\n");
+}
+
+function v_word(m, o, vak, z) {  // .doc из HTML: Word открывает его как документ, работает и без сервера
+  const e = s => String(s ?? "").replace(/[&<>]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;"}[c]));
+  const d = o.dengi || {}, pf = o.proverka_faktov || [];
+  const li = sp => sp.length ? "<ul>" + sp.map(x => `<li>${x}</li>`).join("") + "</ul>" : "<p>нет</p>";
+  const html = `<html><head><meta charset="utf-8"><style>body{font-family:Calibri,Arial;font-size:11pt}
+    td,th{border:1px solid #bbb;padding:4px 6px;vertical-align:top;font-size:10pt}table{border-collapse:collapse;width:100%}
+    h1{font-size:16pt}h2{font-size:13pt;margin-top:14pt}</style></head><body>
+    <h1>Заключение по собеседованию: ${e(bez_demo(m.imya))}</h1>
+    <p>${e(bez_demo(vak && vak.nazvanie))} · собеседование ${e(kogda(m.sozdan))}</p>
+    <p><b>Совет помощника: ${e(o.sovet)}</b>${o.ball_pct !== undefined ? ` · балл по профилю ${o.ball_pct} %` : ""} · решение принимает HR${m.reshenie ? ` · решение HR: ${e(m.reshenie)}` : ""}</p>
+    <h2>Вывод</h2><p>${e(o.vyvod)}</p>
+    <h2>Компетенции</h2><table><tr><th>Компетенция</th><th>Оценка</th><th>Почему</th><th>Цитата</th><th>Время</th></tr>
+    ${o.kompetencii.map(k => `<tr><td><b>${e(k.nazvanie)}</b></td><td>${e(k.ocenka)}</td><td>${e(k.pochemu)}</td><td>«${e(kratko(k.citata))}»</td><td>${e(k.taymkod)}</td></tr>`).join("")}</table>
+    <h2>Зелёные флаги</h2>${li(o.zelenye_flagi.map(f => `${e(f.text)} (${e(f.taymkod)})`))}
+    <h2>Красные флаги</h2>${li(o.krasnye_flagi.map(f => `<b>${e(f.pravilo)}</b>: ${e(f.fakt)} (${e(f.taymkod)})`))}
+    ${d.prevyshenie_pct !== undefined ? `<p>Деньги: ожидания ${e(rub(d.ozhidaniya_rub))}, вилка до ${e(rub(d.vilka_max_rub))}, разница ${d.prevyshenie_pct > 0 ? "+" : ""}${e(String(d.prevyshenie_pct).replace(".", ","))} %.</p>` : ""}
+    <h2>Противоречия</h2>${li(nastoyashchie(o.protivorechiya).map(x => `${e(x.text)} (${e(x.taymkody)})`))}
+    ${pf.length ? `<h2>Проверка фактов</h2><table><tr><th>Кандидат сказал</th><th>Проверка</th><th>Источник</th></tr>${pf.map(x => `<tr><td>${e(x.fakt)}</td><td>${e(x.verdikt)}. ${e(x.poyasnenie)}</td><td>${e(x.istochnik ? (x.istochnik.dokument || x.istochnik.url) + (x.istochnik.razdel ? ", " + x.istochnik.razdel : "") : "")}</td></tr>`).join("")}</table>` : ""}
+    <h2>Вопросы на следующий этап</h2><ol>${o.voprosy_dalshe.map(q => `<li>${e(q)}</li>`).join("")}</ol>
+    <p style="color:#777;font-size:9pt">Заключение подготовил HR-помощник на компьютере HR, без интернета${z ? `, модель ${e(z.model)}` : ""}. Эмоции, честность и характер не оценивались.</p>
+    </body></html>`;
+  const a = el("a", {href: "data:application/msword;charset=utf-8," + encodeURIComponent("﻿" + html), download: `Заключение ${bez_demo(m.imya)}.doc`});
+  document.body.append(a); a.click(); a.remove();
+}
+
+const GLAVNOE_TAG = {"подтверждает": "green", "риск": "red", "не обсуждали": ""};
+function blok_glavnoe(g) {  // главное требование руководителя из профиля и что на него ответил кандидат
+  if (!g) return "";
+  return el("div", {style: "margin-top:10px;padding:10px 12px;border:1px solid var(--line);border-radius:8px"},
+    el("b", {}, "Главное для руководителя: "), g.trebovanie, " ", tag(g.status, GLAVNOE_TAG[g.status]),
+    el("div", {class: "muted", style: "margin-top:4px"}, g.poyasnenie),
+    g.citata ? el("div", {class: "muted"}, "«" + kratko(g.citata, 160) + "» ", tc(g.taymkod)) : "");
+}
+
+async function peresobrat(i) { try { await api(`/api/kandidaty/${i}/peresobrat`, {method: "POST"}); risovat(i); } catch (e) { alert(e.message); } }
+async function reshit(i, r) { await api(`/api/kandidaty/${i}/reshenie`, {method: "POST", json: {reshenie: r}}); risovat(i); }
+
+// ---------- сравнение кандидатов ----------
+function slova(s) { return String(s || "").toLowerCase().replace(/ё/g, "е").split(/[^а-яa-z0-9]+/).filter(w => w.length > 2); }
+function pohozhe(a, b) {
+  const x = new Set(slova(a)), y = new Set(slova(b));
+  if (!x.size || !y.size) return 0;
+  let n = 0; x.forEach(w => { if (y.has(w)) n++; });
+  return n / Math.max(x.size, y.size);
+}
+function kompetencii_profilya(profil) {  // строки таблицы «| Название | 3 | Что считаем хорошим уровнем |»
+  return [...String(profil || "").matchAll(/^\|\s*([^|\n]+?)\s*\|\s*([123])\s*\|\s*([^|\n]*?)\s*\|/gm)]
+    .map(m => ({nazvanie: m[1], ves: +m[2], horosho: m[3]}));
+}
+function nayti_kompetenciyu(spisok, nazvanie) {  // модель называет компетенции почти как в профиле - сверяем по словам
+  let luchshaya = null, ball = 0;
+  for (const k of spisok || []) {
+    const b = k.nazvanie.toLowerCase() === nazvanie.toLowerCase() ? 1 : pohozhe(k.nazvanie, nazvanie);
+    if (b > ball) { ball = b; luchshaya = k; }
+  }
+  return ball >= 0.5 ? luchshaya : null;
+}
+const PORYADOK_SOVETA = {"приглашать дальше": 0, "под вопросом": 1, "не подходит": 2};
+function cvet_balla(b) { return b >= 75 ? "var(--green)" : b >= 45 ? "var(--yellow)" : "var(--red)"; }
+// маленькая модель иногда кладёт в «противоречия» вывод «нет противоречия» - это не противоречие
+function nastoyashchie(sp) { return (sp || []).filter(x => !/нет противоречи|не противоречит|согласуется/i.test(x.text || "")); }
+function rub(x) { return Number(x).toLocaleString("ru-RU") + " ₽"; }
+function fakty_schet(o) {
+  const n = v => (o.proverka_faktov || []).filter(x => x.verdikt === v).length;
+  return {da: n("подтверждено"), net: n("неверно"), spor: n("спорно")};
+}
+
+let s_vak = null;
+async function zagr_sravnenie() {
+  vakansii = await api("/api/vakansii");
+  const ks = await api("/api/kandidaty");
+  if (!s_vak || !vakansii.some(v => v.id === s_vak)) {  // по умолчанию - вакансия, где больше всего разобранных
+    const n = id => ks.filter(k => k.vakansiya_id === id && k.status === "готово").length;
+    s_vak = vakansii.length ? [...vakansii].sort((a, b) => n(b.id) - n(a.id))[0].id : null;
+  }
+  const sel = $("#s-vak");
+  sel.replaceChildren(...vakansii.map(v => el("option", {value: v.id}, v.nazvanie)));
+  sel.value = s_vak || ""; sel.onchange = () => { s_vak = sel.value; zagr_sravnenie(); };
+  const vak = vakansii.find(v => v.id === s_vak);
+  const svoi = ks.filter(k => k.vakansiya_id === s_vak);
+  const dannye = await Promise.all(svoi.filter(k => k.status === "готово").map(k => api("/api/kandidaty/" + k.id)));
+  const ryad = dannye.filter(d => d.otchet).map(d => ({m: d.meta, o: {...d.otchet.otchet, protivorechiya: nastoyashchie(d.otchet.otchet.protivorechiya)}}));
+  ryad.sort((a, b) => (b.o.ball_pct ?? -1) - (a.o.ball_pct ?? -1) || PORYADOK_SOVETA[a.o.sovet] - PORYADOK_SOVETA[b.o.sovet]);
+  ryad.forEach(r => imena[r.m.id] = r.m.imya);
+  const zhdut = svoi.length - ryad.length;
+  const itog = $("#s-itog"), box = $("#s-tablica");
+  if (!ryad.length) {
+    itog.replaceChildren(el("p", {}, "По этой вакансии пока нет разобранных собеседований."));
+    box.replaceChildren(); return;
+  }
+  const otkryt_k = i => { pokazat_tab("sobes"); otkryt(i); };
+  const imya_k = r => el("a", {href: "#", onclick: e => { e.preventDefault(); otkryt_k(r.m.id); }}, r.m.imya);
+  const lider = ryad.length > 1 && (ryad[0].o.ball_pct ?? 0) > (ryad[1].o.ball_pct ?? 0) ? ryad[0].m.id : null;
+
+  itog.replaceChildren(el("ol", {class: "flags"}, ryad.map(r => {
+    const f = fakty_schet(r.o), kf = r.o.krasnye_flagi.length;
+    return el("li", {style: "margin:6px 0"}, el("b", {}, imya_k(r)), "  ", tag(r.o.sovet, SOVET_TAG[r.o.sovet]),
+      el("span", {class: "muted"}, (r.o.ball_pct === undefined ? "  " : `  балл ${r.o.ball_pct} % · `) + (kf ? `красных флагов: ${kf}` : "без красных флагов") +
+        (f.net ? ` · ошибок в фактах: ${f.net}` : "")),
+      r.m.reshenie ? ["  · решение HR: ", tag(r.m.reshenie, r.m.reshenie === "дальше" ? "green" : "red")] : "");
+  })), zhdut ? el("p", {class: "muted"}, `Ещё в работе: ${zhdut}. Появятся здесь, когда будет готово заключение.`) : "");
+
+  const kol = r => r.m.id === lider ? {class: "lider"} : {};
+  const stroka = (zag, yacheyka) => el("tr", {}, el("td", {}, zag), ryad.map(r => el("td", kol(r), yacheyka(r))));
+  const razdel = t => el("tr", {class: "razdel"}, el("td", {colspan: ryad.length + 1}, t));
+  let komp = kompetencii_profilya(vak && vak.profil);
+  if (!komp.length) {  // профиль без таблицы - берём названия из заключений
+    const vse = []; ryad.forEach(r => r.o.kompetencii.forEach(k => { if (!vse.some(x => pohozhe(x.nazvanie, k.nazvanie) >= 0.5)) vse.push({nazvanie: k.nazvanie}); }));
+    komp = vse;
+  }
+  const tbody = el("tbody", {},
+    stroka("Совет помощника", r => tag(r.o.sovet, SOVET_TAG[r.o.sovet])),
+    stroka("Балл по профилю", r => r.o.ball_pct === undefined ? "-" : [el("b", {}, r.o.ball_pct + " %"),
+      el("div", {class: "ball"}, el("i", {style: `width:${r.o.ball_pct}%;background:${cvet_balla(r.o.ball_pct)}`}))]),
+    razdel("Компетенции из профиля"),
+    komp.map(p => stroka([el("b", {}, p.nazvanie), p.ves ? el("div", {class: "mini"}, `вес ${p.ves}` + (p.ves === 3 ? " · без этого не берём" : "")) : ""], r => {
+      const k = nayti_kompetenciyu(r.o.kompetencii, p.nazvanie);
+      if (!k) return el("span", {class: "muted"}, "не оценено");
+      return el("div", {title: k.citata ? "«" + k.citata + "»" : ""}, tag(k.ocenka, OCENKA_TAG[k.ocenka]), el("div", {class: "mini"}, kratko(k.pochemu, 90)));
+    })),
+    razdel("Риски"),
+    stroka("Красные флаги", r => r.o.krasnye_flagi.length ? el("ul", {class: "flags"}, r.o.krasnye_flagi.map(f => el("li", {}, f.pravilo))) : tag("нет", "green")),
+    stroka("Противоречия в словах", r => r.o.protivorechiya.length ? el("ul", {class: "flags"}, r.o.protivorechiya.map(x => el("li", {class: "mini"}, kratko(x.text, 110)))) : tag("нет", "green")),
+    stroka("Деньги", r => { const d = r.o.dengi || {};
+      return d.prevyshenie_pct === undefined ? el("span", {class: "muted"}, "не прозвучали")
+        : [rub(d.ozhidaniya_rub), el("div", {class: "mini", style: d.prevyshenie_pct > d.porog_pct ? "color:var(--red)" : ""},
+          d.prevyshenie_pct > 0 ? `+${String(d.prevyshenie_pct).replace(".", ",")} % к верху вилки` : "в вилке")]; }),
+    stroka("Проверка фактов", r => { const f = fakty_schet(r.o);
+      if (!(r.o.proverka_faktov || []).length) return el("span", {class: "muted"}, "нечего проверять");
+      return [el("div", {}, [f.da && `✅ ${f.da}`, f.net && `❌ ${f.net}`, f.spor && `⚠ ${f.spor}`].filter(Boolean).join("  ")),
+        r.o.proverka_faktov.filter(x => x.verdikt === "неверно").map(x => el("div", {class: "mini", style: "color:var(--red)"}, x.fakt))]; }),
+    razdel("Дальше"),
+    stroka("Главное для руководителя", r => r.o.glavnoe ? [tag(r.o.glavnoe.status, GLAVNOE_TAG[r.o.glavnoe.status]),
+      el("div", {class: "mini"}, kratko(r.o.glavnoe.poyasnenie, 110))] : el("span", {class: "muted"}, "-")),
+    stroka("Главный вопрос на следующий этап", r => el("span", {class: "mini", style: "color:var(--text)"}, r.o.voprosy_dalshe[0] || "-")),
+    stroka("Решение HR", r => r.m.reshenie ? tag(r.m.reshenie, r.m.reshenie === "дальше" ? "green" : "red") : el("span", {class: "muted"}, "ещё нет")));
+  box.replaceChildren(el("table", {class: "srav"},
+    el("thead", {}, el("tr", {}, el("th", {}), ryad.map(r => el("th", kol(r), imya_k(r), r.m.id === lider ? el("div", {class: "mini", style: "color:var(--green)"}, "★ ближе всех к профилю") : "",
+      el("div", {class: "mini"}, "собеседование " + kogda(r.m.sozdan)))))), tbody));
+}
+
+// ---------- отклики ----------
+const SOVET_O = {"звать на собеседование": "green", "под вопросом": "yellow", "не подходит": "red"};
+const OCENKA_O = {"есть в резюме": "green", "частично": "yellow", "нет в резюме": ""};
+const PORYADOK_O = {"звать на собеседование": 0, "под вопросом": 1, "не подходит": 2};
+let o_vak = null, o_otkryt = null;
+function status_pisma(x) {
+  const p = x.pismo;
+  if (!x.razbor) return tag("ещё разбирается", "blue");
+  if (!p) return x.reshenie ? "-" : tag("решаете вы", "yellow");
+  if (p.status === "отправлено") return tag(`${p.tip}: отправлено${p.kto === "помощник сам" ? " помощником" : ""}`, p.tip === "отказ" ? "" : "green");
+  return tag(`${p.tip}: ждёт вас`, p.tip === "отказ" ? "red" : "blue");
+}
+async function zagr_otkliki() {
+  vakansii = await api("/api/vakansii");
+  if (!o_vak || !vakansii.some(v => v.id === o_vak)) o_vak = vakansii.length ? vakansii[0].id : null;
+  const sel = $("#o-vak");
+  sel.replaceChildren(...vakansii.map(v => el("option", {value: v.id}, v.nazvanie)));
+  sel.value = o_vak || ""; sel.onchange = () => { o_vak = sel.value; o_otkryt = null; zagr_otkliki(); };
+  const vak = vakansii.find(v => v.id === o_vak);
+  if (vak) {
+    document.querySelectorAll("input[name=o-rezhim]").forEach(r => r.checked = r.value === (vak.pisma_sama ? "1" : "0"));
+    $("#o-podpis").value = vak.podpis || "";
+  }
+  const xs = o_vak ? await api("/api/otkliki?vakansiya_id=" + o_vak) : [];
+  xs.sort((a, b) => (a.razbor ? PORYADOK_O[a.razbor.sovet] : 9) - (b.razbor ? PORYADOK_O[b.razbor.sovet] : 9) ||
+    (b.razbor ? b.razbor.ball_pct : -1) - (a.razbor ? a.razbor.ball_pct : -1));
+  $("#o-pusto").classList.toggle("hide", xs.length > 0);
+  const n = s => xs.filter(x => x.razbor && x.razbor.sovet === s).length;
+  const zhdut = xs.filter(x => x.pismo && x.pismo.status === "ждёт HR").length;
+  const sami = xs.filter(x => x.pismo && x.pismo.kto === "помощник сам").length;
+  $("#o-itog").replaceChildren(xs.length ? el("p", {style: "margin:0"}, el("b", {}, `${xs.length} ${sklon(xs.length, ["отклик", "отклика", "откликов"])}`), ": ",
+    tag(`звать: ${n("звать на собеседование")}`, "green"), " ", tag(`под вопросом: ${n("под вопросом")}`, "yellow"), " ", tag(`не подходит: ${n("не подходит")}`, "red"),
+    zhdut ? el("span", {class: "muted"}, `  · ждут вашего решения: ${zhdut} ${sklon(zhdut, ["письмо", "письма", "писем"])}`) : "",
+    sami ? el("span", {class: "muted"}, `  · помощник сам пригласил: ${sami}`) : "") : "");
+  const kluch = kompetencii_profilya(vak && vak.profil).filter(p => p.ves === 3).map(p => p.nazvanie);
+  const tb = $("#o-tbody"); tb.replaceChildren();
+  for (const x of xs) {
+    const o = x.razbor;
+    tb.append(el("tr", {class: "click", onclick: () => { o_otkryt = o_otkryt === x.id ? null : x.id; zagr_otkliki(); }},
+      el("td", {}, el("b", {}, x.imya), el("div", {class: "mini"}, `${x.istochnik} · ${kogda(x.poluchen)}`)),
+      el("td", {}, o ? tag(o.sovet, SOVET_O[o.sovet]) : "-"),
+      el("td", {}, o ? [el("b", {}, o.ball_pct + " %"), el("div", {class: "ball", style: "width:70px"}, el("i", {style: `width:${o.ball_pct}%;background:${cvet_balla(o.ball_pct)}`}))] : "-"),
+      el("td", {}, o ? kluch.map(k => { const c = nayti_kompetenciyu(o.kompetencii, k); return c ? el("div", {class: "mini"}, tag(c.ocenka, OCENKA_O[c.ocenka]), " ", k) : ""; }) : ""),
+      el("td", {}, o && o.dengi ? [rub(o.dengi.ozhidaniya_rub), o.dengi.prevyshenie_pct > o.dengi.porog_pct
+        ? el("div", {class: "mini", style: "color:var(--red)"}, `+${String(o.dengi.prevyshenie_pct).replace(".", ",")} % к вилке`) : ""] : o ? el("span", {class: "muted"}, "не указаны") : "-"),
+      el("td", {}, status_pisma(x))));
+    if (o_otkryt === x.id) tb.append(el("tr", {}, el("td", {colspan: 6, style: "background:var(--bg)"}, kartochka_otklika(x))));
+  }
+}
+function kartochka_otklika(x) {
+  const o = x.razbor;
+  if (!o) return el("p", {class: "muted"}, "Помощник ещё читает резюме.");
+  const txt = el("textarea", {style: "min-height:200px"}, x.pismo ? x.pismo.text : "");
+  const st = el("span", {class: "muted"});
+  const deystvie = async (put, telo) => {
+    try { await api(`/api/otkliki/${x.id}/${put}`, {method: "POST", json: telo}); zagr_otkliki(); } catch (e) { st.textContent = e.message; }
+  };
+  const pismo = x.pismo;
+  return el("div", {class: "grid2"},
+    el("div", {},
+      el("div", {class: "vyvod", style: "font-size:15px"}, o.itog),
+      el("table", {style: "margin-top:10px"}, el("tbody", {}, o.kompetencii.map(k => el("tr", {}, el("td", {}, el("b", {}, k.nazvanie)),
+        el("td", {}, tag(k.ocenka, OCENKA_O[k.ocenka])), el("td", {class: "mini"}, k.pochemu))))),
+      o.krasnye_flagi.length ? el("p", {}, "🔴 ", o.krasnye_flagi.map(f => [el("b", {}, bez_tochki(f.flag)), ": ", f.fakt, ". "]))
+        : el("p", {class: "muted"}, "Красных флагов по резюме нет."),
+      o.voprosy.length ? [el("b", {}, "Что спросить на первом созвоне"), el("ol", {class: "flags"}, o.voprosy.map(q => el("li", {}, q)))] : "",
+      el("details", {}, el("summary", {class: "muted", style: "cursor:pointer"}, "Резюме целиком"),
+        el("pre", {style: "white-space:pre-wrap;font:inherit;font-size:13.5px"}, x.rezyume))),
+    el("div", {},
+      pismo ? [el("b", {}, `Письмо: ${pismo.tip}`), " ", status_pisma(x), txt,
+        pismo.status !== "отправлено" ? el("div", {class: "row", style: "margin-top:8px"},
+          el("button", {class: "b " + (pismo.tip === "отказ" ? "rec" : "g"), onclick: () => deystvie("pismo", {text: txt.value, otpravit: true})}, "Отправить"),
+          el("button", {class: "b", onclick: () => deystvie("pismo", {text: txt.value})}, "Сохранить правку"), st)
+          : el("p", {class: "muted"}, (pismo.kto === "помощник сам" ? "Помощник отправил сам " : "Отправлено ") + kogda(pismo.kogda) + ".")]
+        : el("p", {class: "muted"}, "Помощник не уверен. Посмотрите резюме и решите сами, письмо он подготовит."),
+      el("div", {class: "row", style: "margin-top:14px"},
+        el("button", {class: "b", onclick: () => deystvie("reshenie", {reshenie: "звать"})}, "Звать на собеседование"),
+        el("button", {class: "b", onclick: () => deystvie("reshenie", {reshenie: "отказ"})}, "Отказать"),
+        el("button", {class: "b", onclick: () => { pokazat_tab("sobes"); setTimeout(() => { $("#n-imya").value = x.imya; $("#n-vak").value = x.vakansiya_id;
+          $("#n-imya").scrollIntoView({behavior: "smooth"}); }, 300); }}, "Записать собеседование →"))));
+}
+$("#b-o-nastr").onclick = async () => {
+  const r = document.querySelector("input[name=o-rezhim]:checked"), sama = !!r && r.value === "1";
+  try { await api(`/api/vakansii/${o_vak}/nastroyki`, {method: "POST", json: {pisma_sama: sama, podpis: $("#o-podpis").value}}); $("#o-nastr-st").textContent = "Сохранено"; }
+  catch (e) { $("#o-nastr-st").textContent = e.message; }
+};
+$("#b-o-add").onclick = async () => {
+  const st = $("#o-add-st"); $("#b-o-add").disabled = true;
+  try {
+    const x = await api("/api/otkliki", {method: "POST", json: {imya: $("#o-imya").value, vakansiya_id: o_vak, rezyume: $("#o-rez").value}});
+    st.textContent = " Читаю резюме, на обычном компьютере это пара минут…"; await zagr_otkliki();
+    await api(`/api/otkliki/${x.id}/razobrat`, {method: "POST"});
+    $("#o-imya").value = ""; $("#o-rez").value = ""; st.textContent = " Готово"; o_otkryt = x.id; zagr_otkliki();
+  } catch (e) { st.textContent = " " + e.message; }
+  $("#b-o-add").disabled = false;
+};
+
+// ---------- эффект ----------
+const MIN_RUCHNOY = [10, 20];  // оценка: столько HR тратит вручную на расшифровку и выводы по одному собеседованию
+const RABOCHIH_DNEY = 21;
+function chislo(s) { const n = parseFloat(String(s).replace(/\s/g, "").replace(",", ".")); return isFinite(n) && n > 0 ? n : 0; }
+function sklon(n, f) { const a = Math.abs(n) % 100, b = a % 10; return f[a > 10 && a < 20 ? 2 : b === 1 ? 0 : b >= 2 && b <= 4 ? 1 : 2]; }
+function min_ili_chasy(min) { return min < 60 ? Math.round(min) + " мин" : chasy(min) + " ч"; }
+function chasy(min) { const h = min / 60; return h < 10 ? String(Math.round(h * 10) / 10).replace(".", ",") : String(Math.round(h)); }
+async function zagr_effekt() {
+  const ks = await api("/api/kandidaty"), pravila = await api("/api/pravila");
+  const dannye = (await Promise.all(ks.filter(k => k.status === "готово").map(k => api("/api/kandidaty/" + k.id)))).filter(d => d.otchet);
+  const n = dannye.length;
+  const zapis_s = dannye.reduce((a, d) => a + (d.meta.dlitelnost_s || (d.repliki.length ? d.repliki[d.repliki.length - 1].end : 0)), 0);
+  const mashina_s = n ? dannye.reduce((a, d) => a + (d.otchet.zamer.vremya_s || 0) + (d.otchet.zamer.vremya_proverki_s || 0), 0) / n : 0;
+  const sum = f => dannye.reduce((a, d) => a + f(d.otchet.otchet), 0);
+  const flagi = sum(o => o.krasnye_flagi.length), protiv = sum(o => nastoyashchie(o.protivorechiya).length);
+  const fakty = sum(o => (o.proverka_faktov || []).length), oshibki = sum(o => fakty_schet(o).net);
+  const plitka = (b, t) => el("div", {class: "plitka"}, el("b", {}, b), el("span", {}, t));
+  $("#e-cifry").replaceChildren(
+    plitka(n, sklon(n, ["собеседование разобрано", "собеседования разобрано", "собеседований разобрано"])),
+    plitka(min_ili_chasy(zapis_s / 60), "записей прослушано и расшифровано"),
+    plitka(n ? Math.round(mashina_s / 60) + " мин" : "-", "уходит у компьютера на одно заключение, пока вы заняты другим"),
+    plitka(fakty, sklon(fakty, ["факт проверен", "факта проверено", "фактов проверено"]) + " по ГОСТам и регламентам"),
+    plitka(oshibki, sklon(oshibki, ["ошибка кандидатов в нормах найдена", "ошибки кандидатов в нормах найдено", "ошибок кандидатов в нормах найдено"])),
+    plitka(flagi + protiv, sklon(flagi + protiv, ["красный флаг или противоречие", "красных флага и противоречия", "красных флагов и противоречий"]) + " отмечено"));
+
+  const vremya = () => {
+    const den = chislo($("#e-den").value), chas = chislo($("#e-chas").value);
+    const [a, b] = MIN_RUCHNOY, v_den = [den * a, den * b], v_mes = v_den.map(x => x * RABOCHIH_DNEY);
+    const rub_mes = chas ? v_mes.map(x => Math.round(x / 60 * chas / 1000) * 1000) : null;
+    $("#e-vremya").replaceChildren(
+      el("p", {class: "vremya"}, "В день: ", el("b", {}, `${chasy(v_den[0])}–${chasy(v_den[1])} ч`), "   ·   в месяц: ",
+        el("b", {}, `${chasy(v_mes[0])}–${chasy(v_mes[1])} ч`), rub_mes ? ["   ·   ", el("b", {}, `${rub_mes[0].toLocaleString("ru-RU")}–${rub_mes[1].toLocaleString("ru-RU")} ₽`), " в месяц"] : ""),
+      el("p", {class: "muted"}, `Это оценка. Мы считаем, что вручную расшифровка, сверка с профилем и вывод занимают ${a}–${b} минут на одно собеседование, ` +
+        `и берём ${RABOCHIH_DNEY} рабочий день в месяце. Точную цифру покажет замер на вашей работе: неделю вручную, неделю с помощником.`),
+      n ? el("p", {class: "muted"}, `Уже ${sklon(n, ["разобранное", "разобранные", "разобранные"])} ${n} ${sklon(n, ["собеседование сэкономило", "собеседования сэкономили", "собеседований сэкономили"])} примерно ${chasy(n * a)}–${chasy(n * b)} ч.`) : "");
+  };
+  $("#e-den").oninput = $("#e-chas").oninput = vremya; vremya();
+
+  const resheno = dannye.filter(d => d.meta.reshenie);
+  const soglasen = d => (d.otchet.otchet.sovet === "приглашать дальше" && d.meta.reshenie === "дальше") || (d.otchet.otchet.sovet === "не подходит" && d.meta.reshenie === "отказ");
+  const spornye = resheno.filter(d => d.otchet.otchet.sovet === "под вопросом").length, odnoznachnye = resheno.length - spornye;
+  const sovp = resheno.filter(soglasen).length;
+  $("#e-sovpadenie").replaceChildren(...(resheno.length ? [
+    el("p", {class: "vremya"}, el("b", {}, odnoznachnye ? Math.round(sovp / odnoznachnye * 100) + " %" : "-"), ` совпадений: ${sovp} из ${odnoznachnye}`),
+    el("p", {class: "muted"}, "Считаем только случаи, где помощник советовал однозначно: «приглашать дальше» или «не подходит»." +
+      (spornye ? ` Ещё ${spornye} с советом «под вопросом», там решали вы.` : "") +
+      " Где решение разошлось с советом, напишите поправку в заключении, и помощник её учтёт.")] :
+    [el("p", {class: "muted"}, "Появится после первых решений «Приглашаем дальше» или «Отказ» в карточках кандидатов.")]));
+
+  const nedelya = iso => { const d = new Date(iso); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - (d.getDay() + 6) % 7); return d; };
+  const po_nedelyam = {};
+  pravila.forEach(x => { const d = nedelya(x.data), k = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; po_nedelyam[k] = (po_nedelyam[k] || 0) + 1; });
+  const nedeli = Object.keys(po_nedelyam).sort();
+  $("#e-popravki").replaceChildren(...(nedeli.length ? [
+    el("table", {}, el("tbody", {}, nedeli.map(k => el("tr", {}, el("td", {}, "неделя с " + new Date(k + "T00:00").toLocaleDateString("ru-RU", {day: "numeric", month: "long"})),
+      el("td", {}, el("b", {}, po_nedelyam[k])))))),
+    el("p", {class: "muted"}, "Каждая поправка становится правилом. Если со временем их становится меньше, значит помощник реже ошибается на ваших вакансиях.")] :
+    [el("p", {class: "muted"}, "Поправок пока нет. Когда вы поправите заключение, здесь будет видно, как часто помощник ошибается и учится ли он.")]));
+}
+
+// ---------- вакансии ----------
+async function zagr_vakansii() {
+  vakansii = await api("/api/vakansii");
+  const tb = $("#v-tbody"); tb.replaceChildren();
+  $("#v-pusto").classList.toggle("hide", vakansii.length > 0);
+  vakansii.forEach(v => tb.append(el("tr", {class: "click", onclick: () => forma_vak(v)}, el("td", {}, el("b", {}, v.nazvanie)), el("td", {}, kogda(v.izmenena)))));
+}
+async function forma_vak(v, k_planu = false) {
+  redakt_vak = v || null;
+  risovat_plan(v);
+  const chek = await api("/api/chek-list");
+  $("#v-forma").classList.remove("hide"); $("#v-err").textContent = ""; $("#v-sobr-st").textContent = "";
+  $("#v-zag").textContent = v ? "Вакансия: " + v.nazvanie : "Новая вакансия";
+  $("#v-nazv").value = v ? v.nazvanie : ""; $("#v-fakt").value = v ? v.faktura : ""; $("#v-profil").value = v ? v.profil : ""; utochnit();
+  const box = $("#v-chek"); box.replaceChildren();
+  chek.forEach(q => box.append(el("label", {style: "margin-bottom:8px"}, q.vopros,
+    el("textarea", {"data-q": q.id, style: "min-height:44px"}, v && v.otvety ? v.otvety[q.id] || "" : ""))));
+  $("#v-forma").classList.toggle("hide", k_planu);  // с кнопки «План собеседования» нужен только план
+  $(k_planu ? "#v-plan" : "#v-forma").scrollIntoView({behavior: "smooth"});
+}
+// ---------- план собеседования ----------
+function risovat_plan(v) {
+  const box = $("#v-plan");
+  if (!v) { box.classList.add("hide"); return; }
+  box.classList.remove("hide");
+  const p = v.plan, st = el("span", {class: "muted"});
+  const knopka = el("button", {class: "b p noprint", onclick: async () => {
+    knopka.disabled = true; st.textContent = " Собираю план, на обычном компьютере это несколько минут…";
+    try { Object.assign(v, await api(`/api/vakansii/${v.id}/plan`, {method: "POST"})); risovat_plan(v); }
+    catch (e) { st.textContent = " " + e.message; knopka.disabled = false; } }}, p ? "Собрать заново" : "Собрать план собеседования");
+  const pechat = el("button", {class: "b noprint", onclick: () => {
+    document.body.classList.add("pechat-plana"); window.print(); document.body.classList.remove("pechat-plana"); }}, "Печать / PDF");
+  const zag = el("div", {class: "row", style: "align-items:center"}, el("h2", {style: "margin:0;flex:1 1 300px"}, "План собеседования: " + v.nazvanie),
+    p ? pechat : "", knopka);
+  if (!p) {
+    box.replaceChildren(zag, el("p", {class: "muted"}, "Помощник подготовит вопросы по каждой компетенции из профиля: что спросить, " +
+      "что считать хорошим ответом и какой ответ должен насторожить. На созвон вы придёте с готовым списком."), st);
+    return;
+  }
+  box.replaceChildren(...[zag, st,
+    p.po_profilyu !== undefined && p.po_profilyu !== v.profil ? el("p", {style: "color:var(--yellow)"}, "⚠ Профиль менялся после того, как собрали план. Соберите план заново.") : "",
+    el("p", {class: "muted"}, `Около ${p.minut_vsego} минут. Время на блок зависит от веса компетенции в профиле. ` +
+      "Хороший ответ взят из профиля дословно, вопросы предлагает помощник, менять их можно как угодно."),
+    p.bloki.map((b, n) => el("div", {class: "blok"},
+      el("h3", {}, `${n + 1}. ${b.kompetenciya} `, b.ves === 3 ? tag("без этого не берём", "blue") : "", el("span", {class: "muted", style: "font-weight:400"}, `  ≈ ${b.minut} мин`)),
+      el("ol", {}, b.voprosy.map(q => el("li", {}, q))),
+      b.utochnenie ? el("p", {class: "muted", style: "margin:4px 0 8px"}, "Уточнить, если ответ общий: ", el("span", {style: "color:var(--text)"}, b.utochnenie)) : "",
+      el("div", {class: "grid2", style: "gap:8px"}, el("div", {class: "horosho"}, el("b", {}, "Хороший ответ: "), b.horoshiy_otvet),
+        el("div", {class: "ploho"}, el("b", {}, "Насторожит: "), b.trevozhnyy_signal || "-")))),
+    p.flagi.length ? el("div", {class: "blok"}, el("h3", {}, "Проверить красные флаги"),
+      el("ul", {class: "flags"}, p.flagi.map(f => el("li", {}, el("b", {}, bez_tochki(f.flag)), ": ", f.vopros)))) : "",
+    el("div", {class: "blok"}, el("h3", {}, "Деньги, в конце разговора"), el("p", {style: "margin:4px 0"}, p.dengi.vopros),
+      el("p", {class: "muted", style: "margin:4px 0"}, `Вилка: ${bez_tochki(p.dengi.vilka) || "не указана в профиле"}. Если ожидания выше верха вилки больше чем на ${p.dengi.porog_pct} %, помощник поставит флаг сам.`)),
+    el("div", {class: "blok"}, el("h3", {}, "Чего не спрашивать"), el("ul", {class: "flags"}, p.nelzya.map(x => el("li", {}, x))),
+      el("p", {class: "muted"}, "Почему: " + p.nelzya_pochemu + ".")),
+    el("p", {class: "muted"}, "План собран " + kogda(p.sobran) + (p.zamer ? ` за ${Math.max(1, Math.round(p.zamer.vremya_s / 60))} мин` : "") + ".")].flat(Infinity));
+}
+$("#b-plan").onclick = () => {
+  const v = vakansii.find(x => x.id === $("#n-vak").value);
+  if (!v) { $("#n-err").textContent = "Сначала создайте вакансию"; return; }
+  pokazat_tab("vak"); forma_vak(v, true);
+};
+
+function utochnit() {  // что помощник не нашёл в ответах
+  const n = ($("#v-profil").value.match(/уточнить у руководителя/gi) || []).length;
+  $("#v-utochnit").textContent = n ? `⚠ Не хватило данных в ${n} местах, они помечены «уточнить у руководителя». Допишите их сами или ответьте на чек-лист подробнее и соберите заново.` : "";
+}
+function otvety() { const o = {}; document.querySelectorAll("#v-chek textarea").forEach(t => o[t.dataset.q] = t.value); return o; }
+$("#b-v-new").onclick = () => forma_vak(null);
+$("#v-profil").addEventListener("input", utochnit);
+$("#b-v-cancel").onclick = () => { $("#v-forma").classList.add("hide"); risovat_plan(null); };
+$("#b-v-sobrat").onclick = async () => {
+  $("#b-v-sobrat").disabled = true; $("#v-sobr-st").textContent = "Собираю профиль… на обычном компьютере это 2–5 минут";
+  try { const r = await api("/api/vakansii/sobrat-profil", {method: "POST", json: {nazvanie: $("#v-nazv").value, faktura: $("#v-fakt").value, otvety: otvety()}});
+    $("#v-profil").value = r.profil; $("#v-sobr-st").textContent = "Готово, проверьте профиль ниже"; utochnit(); }
+  catch (e) { $("#v-sobr-st").textContent = e.message; }
+  $("#b-v-sobrat").disabled = false;
+};
+$("#b-v-save").onclick = async () => {
+  try { await api("/api/vakansii", {method: "POST", json: {id: redakt_vak && redakt_vak.id, nazvanie: $("#v-nazv").value,
+      faktura: $("#v-fakt").value, otvety: otvety(), profil: $("#v-profil").value}});
+    $("#v-forma").classList.add("hide"); risovat_plan(null); zagr_vakansii(); }
+  catch (e) { $("#v-err").textContent = e.message; }
+};
+
+// ---------- правила ----------
+async function zagr_pravila() {
+  const ps = await api("/api/pravila"), box = $("#p-spisok"); box.replaceChildren();
+  if (!ps.length) box.append(el("p", {class: "muted"}, "Правил пока нет. Они появятся, когда вы поправите помощника в заключении."));
+  ps.forEach(p => {
+    const t = el("textarea", {}, p.text);
+    box.append(el("div", {class: "card", style: "background:var(--bg)"}, t,
+      el("div", {class: "row", style: "margin-top:6px"}, el("span", {class: "muted"}, `${p.vakansiya} · ${kogda(p.data)}`),
+        el("button", {class: "b", onclick: async () => { await api("/api/pravila/" + p.id, {method: "PUT", json: {text: t.value}}); zagr_pravila(); }}, "Сохранить"),
+        el("button", {class: "b", style: "color:var(--red)", onclick: async () => { if (confirm("Удалить правило?")) { await api("/api/pravila/" + p.id, {method: "DELETE"}); zagr_pravila(); } }}, "Удалить"))));
+  });
+}
+
+// ---------- база знаний ----------
+async function zagr_znaniya() {
+  const ds = await api("/api/znaniya"), box = $("#zn-spisok"); box.replaceChildren();
+  ds.forEach(d => box.append(el("div", {class: "card", style: "background:var(--bg);margin-bottom:8px"},
+    el("b", {}, d.dokument), el("span", {class: "muted"}, "  · " + d.fayl),
+    d.razdely.length ? el("ul", {class: "flags muted"}, d.razdely.map(r => el("li", {}, r))) : "")));
+}
+$("#b-zn-add").onclick = async () => {
+  const f = $("#zn-fayl").files[0]; if (!f) return;
+  const fd = new FormData(); fd.append("fayl", f);
+  try { await api("/api/znaniya", {method: "POST", body: fd}); $("#zn-st").textContent = "Добавлено. Помощник учтёт документ в следующих разборах."; zagr_znaniya(); }
+  catch (e) { $("#zn-st").textContent = e.message; }
+};
+$("#b-zn-q").onclick = async () => {
+  const box = $("#zn-otvet"); box.replaceChildren(el("p", {class: "muted"}, "Ищу…"));
+  try { const r = await api("/api/znaniya/iskat?q=" + encodeURIComponent($("#zn-q").value));
+    box.replaceChildren(...r.map(x => el("div", {class: "repl"}, el("b", {}, x.dokument + ", " + x.razdel), el("span", {class: "muted"}, "  совпадение " + Math.round(x.ball * 100) + " %"), el("div", {}, x.text)))); }
+  catch (e) { box.replaceChildren(el("p", {class: "err"}, e.message)); }
+};
+
+// ---------- безопасность ----------
+async function zagr_bez() {
+  const b = await api("/api/bezopasnost");
+  $("#bez-svodka").replaceChildren(el("table", {}, el("tbody", {}, [
+    ["Где хранятся записи и заключения", b.papka_dannyh],
+    ["Кто может открыть страницу", b.adres],
+    ["Распознавание речи", "GigaAM, на этом компьютере, без интернета"],
+    ["Модель, которая пишет заключение", "Qwen3 через Ollama, на этом компьютере, без интернета"],
+    ["Что уходит в интернет", b.internet_proverka ? "только общие вопросы для проверки фактов (без имени, цифр-идентификаторов и цитат кандидата); журнал ниже" : "ничего: проверка в интернете выключена"],
+    ["Удаление данных", `при отказе автоматически через ${b.srok_dney} дней; сейчас кандидатов с отказом: ${b.otkazov_k_udaleniyu}`],
+    ["Согласие кандидата", "без отметки о согласии запись и загрузка не запускаются"],
+    ["Решение по кандидату", "принимает человек; помощник только готовит материал (ст. 16 152-ФЗ)"],
+    ["Шифрование диска", "включите BitLocker на диске с папкой данных: при краже компьютера записи не прочитать (инструкция для сисадмина, раздел «Безопасность»)"],
+    ["Срок хранения", "выбирает юрист компании: 30 дней или дольше на случай спора об отказе (ст. 392 ТК); меняется одной настройкой"],
+  ].map(([k, v]) => el("tr", {}, el("td", {class: "muted", style: "width:34%"}, k), el("td", {}, v))))));
+  const z = $("#bez-zhurnal"); z.replaceChildren();
+  if (!b.vyhod.length) z.append(el("p", {class: "muted"}, "Пока ни одного запроса наружу."));
+  b.vyhod.forEach(l => z.append(el("div", {class: "repl", style: "font-family:Consolas,monospace;font-size:13px"},
+    l.replace(/^(\d{4})-(\d\d)-(\d\d)T(\S+)/, "$3.$2.$1 $4"))));
+}
+
+// ---------- обновление ----------
+async function tik() {
+  await obnovit_status();
+  if (tekushchiy) {
+    // перерисовываем карточку, только когда сменился статус разбора (плеер внизу страницы при этом не прерывается)
+    const d = await api("/api/kandidaty/" + tekushchiy).catch(() => null);
+    if (d && d.meta.status !== pokazan_status && !$("#detal textarea:focus")) risovat(tekushchiy);
+  } else if (!$("#tab-sobes").classList.contains("hide")) zagr_kandidatov();
+}
+zagr_kandidatov(); obnovit_status();
+api("/api/bezopasnost").then(b => { SROK = b.srok_dney; }).catch(() => {});
+setInterval(obnovit_status, 1000);
+setInterval(tik, 5000);
+</script>
+</body>
+</html>

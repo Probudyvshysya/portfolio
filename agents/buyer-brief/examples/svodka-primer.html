@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Сводка закупщика</title>
+<style>
+:root{--bg:#f5f4ef;--card:#fff;--ink:#1c1c1a;--mut:#6d6b64;--line:#e3e0d7;--up:#b3261e;--dn:#1d7a3a;--acc:#7a5200;--tag:#efe8d8;
+--g:#2e9d55;--y:#d9a400;--r:#d0402f}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15.5px/1.5 "Segoe UI",system-ui,sans-serif}
+.wrap{max-width:980px;margin:0 auto;padding:22px 16px 40px}
+header{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+h1{font-size:25px;margin:0}.sub{color:var(--mut);font-size:13.5px}
+.badge{background:var(--tag);color:var(--acc);font-size:12.5px;padding:4px 10px;border-radius:999px}
+.svs{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:12px}
+.sv{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;display:grid;grid-template-columns:14px 1fr;column-gap:8px}
+.sv b{font-size:14px}.sv small{grid-column:2;color:var(--mut);font-size:13px}
+.dot{width:12px;height:12px;border-radius:50%;margin-top:4px}.green .dot{background:var(--g)}.yellow .dot{background:var(--y)}.red .dot{background:var(--r)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin-bottom:12px}
+h2{font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--mut);margin:0 0 10px}
+.rynok p{margin:0;font-size:16.5px}
+.cin{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-bottom:12px}
+.cin label{font-size:12.5px;color:var(--mut);display:flex;flex-direction:column;gap:4px}
+.cin input{font:inherit;font-size:16px;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:#fffdf7;color:var(--ink)}
+.calc{border-left:4px solid var(--g)}.todo{border-left:4px solid var(--acc)}.todo ol{margin:0;padding-left:20px}.todo li{margin:6px 0}
+.news{border-top:1px solid var(--line);padding:12px 0}.news:first-of-type{border-top:0;padding-top:0}
+.nh{display:flex;gap:8px;align-items:center}.tag{background:var(--tag);color:var(--acc);font-size:12px;padding:2px 8px;border-radius:6px}
+.dt{color:var(--mut);font-size:12.5px;font-variant-numeric:tabular-nums}
+h3{font-size:16.5px;margin:6px 0 4px}h3 a{color:var(--ink);text-decoration:none}h3 a:hover{text-decoration:underline}
+.news p{margin:4px 0}.imp{background:#faf6ea;border-radius:8px;padding:8px 10px;font-size:14.5px}
+table{width:100%;border-collapse:collapse;font-size:14.5px}td,th{padding:7px 6px;border-bottom:1px solid var(--line);text-align:left}
+th{color:var(--mut);font-weight:500;font-size:12.5px}td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.my td{font-weight:600;background:#fbf7ec}.up{color:var(--up)}.dn{color:var(--dn)}
+.keys{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-bottom:10px}
+.k{border:1px solid var(--line);border-radius:8px;padding:9px 12px}.k span{color:var(--mut);font-size:12.5px;display:block}.k b{font-size:21px}.k small{display:block;font-size:12.5px}
+.note{font-size:14px;color:#3a3935}.src{color:var(--mut);font-size:12px;margin-top:8px}.src a{color:var(--mut)}
+.fon{columns:2 320px;padding-left:0;list-style:none;margin:0}.fon li{break-inside:avoid;margin:0 0 7px;font-size:14px}.fon a{color:var(--ink)}
+details summary{cursor:pointer;color:var(--mut);font-size:13px}
+.grid2{display:grid;grid-template-columns:1.4fr 1fr;gap:12px}@media(max-width:760px){.grid2{grid-template-columns:1fr}}
+footer{color:var(--mut);font-size:12.5px;margin-top:14px}
+</style></head><body><div class="wrap">
+<header><div><h1>Утренняя сводка закупщика</h1>
+<div class="sub">09.11.2026 · собрано 07:30 · Новосибирск · партия для расчёта 1 000 т</div></div>
+<div class="badge">только открытые источники · данные компании не используются</div></header>
+
+<div class="card rynok"><h2>Рынок за неделю</h2><p>Пшеница 3 класса дорожает во всех регионах: +1,2 % … +4,0 %, Сибирь +3,0 %. Доллар +0,8 % за неделю. Ставка ЦБ 15 %. Государство начинает закупки в интервенционный фонд.</p></div>
+<div class="svs"><div class="sv yellow"><span class="dot"></span><b>Цена закупки</b><small>Сибирь, 3 класс +3,0 % за неделю</small></div><div class="sv yellow"><span class="dot"></span><b>Стоимость денег</b><small>ставка 15 %</small></div><div class="sv red"><span class="dot"></span><b>Контрагенты</b><small>1 сигн. о банкротстве в регионе</small></div><div class="sv yellow"><span class="dot"></span><b>Сбыт и экспорт</b><small>порты Юга сжаты, для Сибири фон</small></div></div>
+
+<div class="card todo"><h2>Что сделать сегодня</h2><ol><li>Сверить контрагентов с новостью: «Арбитраж ввёл наблюдение в агрохолдинге из Алтайского края».</li><li>Цена растёт: на партии 1 000 т рост за неделю стоит 350 000 ₽. Решить, какие партии контрактовать до следующего мониторинга.</li><li>Предоплаты: 10 000 000 ₽ на 30 дней при кредите около 20 % (ключевая плюс маржа банка, условно) стоят около 164 384 ₽: при отраслевой марже 1,5–2 % это 75–100 % маржи партии 1 000 т (маржа от цены без НДС). Просрочка возврата съедает маржу, а невозврат забирает всю сумму. Поэтому без проверки контрагента предоплату не отправлять.</li></ol></div>
+
+<div class="card"><h2>Главное за неделю: что произошло и что это значит</h2><article class="news"><div class="nh"><span class="tag">Цены</span><span class="dt">07.11</span></div><h3><a href="https://www.zerno.ru/node/50102">Пшеница в Сибири подорожала третью неделю подряд</a></h3><p>Средняя цена пшеницы 3 класса в Сибири за неделю выросла на 3 процента. Переработчики добирают сырьё до зимы, а хозяйства придерживают зерно в ожидании дальнейшего роста. Аналитики ждут, что рост замедлится после завершения уборки в северных районах.</p><p class="imp"><b>Что это значит для нас:</b> Сверить с нашими ценами закупки в таблице ниже: успеваем ли законтрактовать до следующего роста.</p></article><article class="news"><div class="nh"><span class="tag">Контрагенты</span><span class="dt">08.11</span></div><h3><a href="https://www.zerno.ru/node/50101">Арбитраж ввёл наблюдение в агрохолдинге из Алтайского края</a></h3><p>Арбитражный суд ввёл процедуру наблюдения в агрохолдинге, который закупает зерно у хозяйств Алтайского края и Новосибирской области. Заявление подал банк-кредитор, сумма требований около 240 млн рублей. Временный управляющий назначен на четыре месяца. Хозяйства, отгрузившие зерно без оплаты, могут заявить требования в реестр.</p><p class="imp"><b>Что это значит для нас:</b> Компания из нашего макрорегиона. Сверить со списком хозяйств и покупателей: нет ли её или связанных с ней фирм среди контрагентов и должников. Предоплату таким не отправлять.</p></article><article class="news"><div class="nh"><span class="tag">Господдержка и правила</span><span class="dt">06.11</span></div><h3><a href="https://www.zerno.ru/node/50103">Минсельхоз объявил закупочные интервенции зерна в европейской части страны</a></h3><p>Закупочные интервенции пройдут на площадках в Центральном, Южном и Приволжском федеральных округах. Государство будет покупать пшеницу 3 и 4 класса по фиксированной цене. Торги начнутся во второй половине ноября.</p><p class="imp"><b>Что это значит для нас:</b> Площадки фонда только в европейской части, в Сибири государство напрямую не покупает. Поддержка цен на Юге и в Поволжье; на сибирские цены прямого влияния нет.</p></article><article class="news"><div class="nh"><span class="tag">Экспорт и логистика</span><span class="dt">05.11</span></div><h3><a href="https://www.zerno.ru/node/50104">Отгрузки зерна в портах Юга снизились до минимума сезона</a></h3><p>Отгрузки зерна через порты Юга за неделю снизились до минимума сезона. Экспортёры ссылаются на низкие мировые цены и высокие издержки фрахта. Цены в портах снизились на 150 рублей за тонну.</p><p class="imp"><b>Что это значит для нас:</b> Давление на цены там, где зерно шло в порты: Юг и Центр. Сибирь от южных портов далеко, прямое влияние слабое, это фон рынка. Для нас важнее местный спрос, переработчики и ж/д тарифы.</p></article>
+<div class="src">Отбор по правилам: Сибирь, контрагенты, цены, экспорт, господдержка весят больше; новости других стран ниже</div></div>
+
+<div class="grid2">
+<div class="card"><h2>Пшеница 3 класса, ₽/т, EXW</h2>
+<table><tr><th>Регион</th><th class="n">С НДС</th><th class="n">Без НДС</th><th class="n">За неделю</th><th class="n">%</th><th class="n">На партию</th></tr><tr class="my"><td>Сибирь</td><td class="n">12 100</td><td class="n">11 000</td><td class="n up">+350</td><td class="n">+3,0 %</td><td class="n">+350 000</td></tr><tr class=""><td>Урал</td><td class="n">11 300</td><td class="n">10 273</td><td class="n up">+150</td><td class="n">+1,3 %</td><td class="n">+150 000</td></tr><tr class=""><td>Поволжье</td><td class="n">10 450</td><td class="n">9 500</td><td class="n up">+400</td><td class="n">+4,0 %</td><td class="n">+400 000</td></tr><tr class=""><td>Черноземье</td><td class="n">9 950</td><td class="n">9 045</td><td class="n up">+120</td><td class="n">+1,2 %</td><td class="n">+120 000</td></tr><tr class=""><td>Юг</td><td class="n">9 700</td><td class="n">8 818</td><td class="n up">+300</td><td class="n">+3,2 %</td><td class="n">+300 000</td></tr></table>
+<p class="note">Сибирь дороже других регионов: Урал +800, Поволжье +1 650, Черноземье +2 150, Юг +2 400 ₽/т. Выгодно ли везти зерно к нам из других регионов, решает ж/д тариф на маршрут; на внедрении подставим ваши тарифы и посчитаем точно. Сравнивайте цены без НДС: у хозяйства, освобождённого от НДС (часть хозяйств на ЕСХН), вычета не будет, и реальная стоимость для нас та же. НДС на зерно 10 %. Изменение за неделю считано по цене с НДС.</p>
+<div class="src">«ПроЗерно», мониторинг от 06.11.2026 · данным 3 дн., следующий мониторинг 13.11 · <a href="https://www.interfax.ru/business/9000002">источник</a></div></div>
+
+<div class="card"><h2>Деньги</h2><div class="keys" style="grid-template-columns:1fr 1fr"><div class="k"><span>Ключевая ставка</span><b>15,00 %</b><small>на 07.11.2026</small></div><div class="k"><span>Юань, ЦБ</span><b>11,41 ₽</b><small class="up">+0,7 % за неделю</small></div><div class="k"><span>Доллар, ЦБ</span><b>81,25 ₽</b><small class="up">+0,8 % за неделю</small></div><div class="k"><span>Евро, ЦБ</span><b>93,87 ₽</b><small class="up">+0,8 % за неделю</small></div></div>
+<p class="note">Деньги под предоплату 10 000 000 ₽ на 30 дней при кредите около 20 % стоят около 164 384 ₽. Курс для сибирской закупки фон: рубль за неделю ослаб, это влияет на экспортёров Юга сильнее, чем на нас.</p>
+<div class="src">Банк России: курсы на 10.11.2026 к 03.11.2026, ключевая ставка</div></div>
+</div>
+
+<div class="card calc"><h2>Калькулятор сделки: подставьте свои цифры</h2>
+<div class="cin">
+<label>Объём, т<input id="v" type="number" value="1000" step="50"></label>
+<label>Цена закупки, ₽/т без НДС<input id="z" type="number" value="11000" step="50"></label>
+<label>Цена продажи, ₽/т без НДС<input id="pr" type="number" value="11660" step="50"></label>
+<label>Логистика и хранение, ₽/т<input id="l" type="number" value="400" step="50"></label>
+<label>Предоплата хозяйству, %<input id="pp" type="number" value="50" step="10"></label>
+<label>Деньги заморожены, дней<input id="d" type="number" value="30" step="5"></label>
+<label>Ставка кредита, %<input id="s" type="number" value="20" step="0.5"></label>
+</div>
+<div class="keys" id="res"></div>
+<p class="note" id="vyvod"></p>
+<div class="src">Цифры по умолчанию для примера: закупка по «ПроЗерно» без НДС, продажа +6 %, логистика 400 ₽/т. Считает страница, интернет не нужен</div>
+</div>
+<script>// Калькулятор сделки на странице. Формулы те же, что в raschet.py: sdelka().
+// Совпадение проверяет tests/test_svodka.py на примерах из examples/sdelki.json.
+function schetSdelki(v, z, pr, l, pp, d, s) {
+  const vyruchka = pr * v, zakupka = z * v, logist = l * v;
+  const dengi = zakupka * pp / 100 * s / 100 * d / 365;
+  const marzha = vyruchka - zakupka - logist - dengi;
+  const doDeneg = vyruchka - zakupka - logist;
+  return {
+    vyruchka: vyruchka,
+    dengi: dengi,
+    do_deneg: doDeneg,
+    marzha: marzha,
+    marzha_proc: vyruchka ? marzha / vyruchka * 100 : 0,
+    dolya_deneg_proc: doDeneg > 0 ? dengi / doDeneg * 100 : 0,
+    cena_v_nol: v ? (zakupka + logist + dengi) / v : 0,
+    za_10_rub: 10 * v,
+    minus_10_dney: zakupka * pp / 100 * s / 100 * 10 / 365
+  };
+}
+if (typeof module !== "undefined") { module.exports = { schetSdelki }; }
+
+(function(){
+  const f = n => Math.round(n).toLocaleString('ru-RU');
+  const g = id => parseFloat(document.getElementById(id).value) || 0;
+  function schet(){
+    const r = schetSdelki(g('v'), g('z'), g('pr'), g('l'), g('pp'), g('d'), g('s'));
+    document.getElementById('res').innerHTML =
+      '<div class="k"><span>Маржа сделки</span><b class="' + (r.marzha < 0 ? 'up' : 'dn') + '">' + f(r.marzha) + ' ₽</b><small>' + r.marzha_proc.toFixed(1).replace('.', ',') + ' % от выручки</small></div>' +
+      '<div class="k"><span>Цена в ноль</span><b>' + f(r.cena_v_nol) + ' ₽/т</b><small>продажа без НДС, ниже будет убыток</small></div>' +
+      '<div class="k"><span>Деньги под предоплату</span><b>' + f(r.dengi) + ' ₽</b><small>' + (r.do_deneg > 0 ? 'съедают ' + r.dolya_deneg_proc.toFixed(0) + ' % маржи' : 'маржи нет и без них') + '</small></div>' +
+      '<div class="k"><span>Каждые 10 ₽/т в цене</span><b>' + f(r.za_10_rub) + ' ₽</b><small>на этом объёме</small></div>' +
+      '<div class="k"><span>Выручка</span><b>' + f(r.vyruchka) + ' ₽</b><small>без НДС</small></div>';
+    document.getElementById('vyvod').textContent = r.marzha < 0
+      ? 'Сделка в минусе: в ноль выходит при продаже от ' + f(r.cena_v_nol) + ' ₽/т. Проверьте цену продажи, логистику или срок предоплаты.'
+      : 'Сократить заморозку денег на 10 дней = +' + f(r.minus_10_dney) + ' ₽ к марже этой сделки.';
+  }
+  document.querySelectorAll('.calc input').forEach(i => i.addEventListener('input', schet));
+  schet();
+})();
+</script>
+
+<div class="card"><h2>Погода в районах закупки, 3 дня</h2>
+<table><tr><th>Район</th><th class='n'>Температура</th><th class='n'>Осадки</th><th>Вывоз и погрузка</th></tr><tr><td>Новосибирск</td><td class="n">-12…-3 °C</td><td class="n">4,3 мм</td><td>снег, возможны задержки вывоза</td></tr><tr><td>Барнаул</td><td class="n">-2…7 °C</td><td class="n">6,3 мм</td><td>дожди, проверить подъезды</td></tr></table>
+<p class="note">Без помех: Омск.</p>
+<div class="src">Open-Meteo</div></div>
+
+<div class="card"><h2>Остальное за неделю</h2><ul class="fon"><li><span class="dt">04.11</span> <a href="https://www.zerno.ru/node/50105">Банк России сохранил ключевую ставку</a></li><li><span class="dt">02.11</span> <a href="https://www.zerno.ru/node/50108">Цены на фуражный ячмень в Поволжье стабилизировались</a></li><li><span class="dt">06.11</span> <a href="https://www.zerno.ru/node/50107">Экспорт пшеницы из Казахстана в Китай вырос на треть</a></li><li><span class="dt">03.11</span> <a href="https://www.zerno.ru/node/50106">Уборка кукурузы на юге подходит к концу</a></li></ul>
+<div class="src">zerno.ru, новости за 7 дней</div></div>
+
+<footer>Как это работает: сборщик на вашем компьютере каждое утро забирает открытые данные (ЦБ, отраслевые новости, недельные цены, погоду),
+отбирает важное по правилам и считает влияние в рублях на ваши параметры. Цифры считает код, не нейросеть. На внедрении сюда добавляются
+ваши цены закупки, районы хозяйств и список контрагентов для сверки.
+</footer>
+</div></body></html>

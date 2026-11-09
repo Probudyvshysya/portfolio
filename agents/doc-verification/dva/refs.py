@@ -35,6 +35,9 @@ def normalize(designation: str) -> str:
     return re.sub(r"\s+", " ", designation.strip()).upper()
 
 
+KIND_RU = {"clause": "п.", "table": "табл.", "section": "разд.", "appendix": "прил."}
+
+
 def _kind(raw: str) -> str:
     raw = raw.lower()
     if raw.startswith(("табл",)):
@@ -99,7 +102,7 @@ def report(cites: list[Citation]) -> str:
     lines = [f"Ссылок на нормативы: {len(cites)} · верных {len(by['ok'])} · ошибочных {len(by['missing'])} · "
              f"не проверено {len(by['unverifiable'])}"]
     for c in by["missing"]:
-        lines.append(f"  ❌ {c.kind} {c.number} {c.document} — нет в тексте норматива · «…{c.context}…»")
+        lines.append(f"  ❌ {KIND_RU.get(c.kind, c.kind)} {c.number} {c.document} — нет в тексте норматива · «…{c.context}…»")
     for doc in sorted({c.document for c in by["unverifiable"]}):
         lines.append(f"  ⚠ {doc} — текста нет в библиотеке, ссылки сверить вручную")
     return "\n".join(lines)
